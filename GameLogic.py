@@ -1,49 +1,43 @@
-import pygame
-from pygame.locals import *
-
-import Player
-from GameState import GameState
+from GameState import Board
 
 
-def game_main_loop():
+class GameLogic:
 
+    def game_ended(self, board):
+        if any(board.state[8:]) == False or any(board.state[1:7]) == False:
+            return True
+        return False
 
-    initGameState = GameState()
+    def move(self, board, n):
+        print(board, n)
+        # operations on board
+        # return new state
+        return board
 
-    # 2 - Initialize the game
-    pygame.init()
-    width, height = 640, 480
-    screen = pygame.display.set_mode((width, height))
+    def game_loop(self, initial_board=None, player_starts=True):
+        board = Board()
 
-    # 3 - Load images
-    # player = pygame.image.load("resources/images/dude.png")
+         # set init board state if a states is given
+        if initial_board is not None:
+            board.board = initial_board
 
-    # 4 - keep looping through
-    while 1:
-        # 5 - clear the screen before drawing it again
-        screen.fill(0)
-        # 6 - draw the screen elements
-        # screen.blit(player, (100, 100))
-        # 7 - update the screen
-        pygame.display.flip()
-        # 8 - loop through the events
-        for event in pygame.event.get():
-            # check if the event is the X button
-            if event.type == pygame.QUIT:
-                # if it is quit the game
-                pygame.quit()
-                exit(0)
+        # print init state
+        board.print()
 
-def winner(gamestate: GameState):
+        # main game loop
+        while 1:
+            # player makes move
+            if player_starts:
+                move = input("Enter bucket number: ")
+                board = self.move(board, move)
+            # AI makes move
+            else:
+                print("no move")
 
+            # check if the game is over
+            if self.game_ended(board):
+                print("Games ended!")
+                print("AI : " + board.get_ai_score())
+                print("Player : " + board.get_player_score())
+                break
 
-
-
-def game_end(gamestate: GameState, lastplayer: Player):
-    if(lastplaye)
-    state =
-
-    for i in gamestate.:
-        if gamestate.p1[i] > 0:
-            return False
-    return True

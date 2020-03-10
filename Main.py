@@ -1,4 +1,14 @@
-import GameLogic
+from GameState import Board
+from GameLogic import GameLogic
 
 if __name__ == '__main__':
-    GameLogic.game_main_loop()
+    game_logic = GameLogic()
+    print("Let the game begin!")
+    print("-------------------")
+    board = Board()
+    print("init state:")
+   # board.print()
+    game_logic.game_loop(board, True)
+
+
+
