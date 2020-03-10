@@ -1,6 +1,6 @@
 class Board:
-    AI_SCORE = 0
-    PLAYER_SCORE = 7
+    AI_SCORE = 7
+    PLAYER_SCORE = 0
 
     state = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
