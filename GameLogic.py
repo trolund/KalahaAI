@@ -84,6 +84,7 @@ class GameLogic:
                     move = self.get_input(True)
                     board, one_more_move = self.move(board, move, True)
                     has_move = one_more_move
+                    player_starts = False
             # AI makes move
             else:
                 has_move = True
@@ -91,6 +92,7 @@ class GameLogic:
                     move = self.get_input(False)
                     board, one_more_move = self.move(board, move, False)
                     has_move = one_more_move
+                    player_starts = True
 
             board.print(self.game_ended(board))
 

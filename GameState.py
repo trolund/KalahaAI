@@ -23,8 +23,6 @@ class Board:
         else:
             return self.state[0]
 
-
-
     def print(self, gameover):
         ai_points = self.ai_points(gameover)
         player_points = self.player_points(gameover)
