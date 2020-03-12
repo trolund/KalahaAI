@@ -7,7 +7,6 @@ if __name__ == '__main__':
     print("-------------------")
     board = Board()
     print("init state:")
-   # board.print()
     game_logic.game_loop(board, True)
 
 
