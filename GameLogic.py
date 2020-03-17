@@ -10,7 +10,7 @@ class GameLogic:
                 self.get_opposite_points(n, board, realplayer)
                 move_again = False
         else:
-            if board.state[i] == 1 and (14 > i > 7):
+            if board.state[i] == 1 and (13 > i > 7):
                 self.get_opposite_points(n, board, realplayer)
                 move_again = False
 
@@ -24,13 +24,15 @@ class GameLogic:
         while not hand_count == 0:
             board.state[i] = board.state[i] + 1
             hand_count = hand_count - 1
+
+            if i == board.PLAYER_SCORE and realplayer:
+                move_again = True
+            if i == board.AI_SCORE and not realplayer:
+                move_again = True
+
             i = self.next_bucket(i)
 
-            move_again = False
-            if n == board.PLAYER_SCORE and realplayer:
-                move_again = True
-            if n == board.AI_SCORE and not realplayer:
-                move_again = True
+
 
         return move_again, i;
 
@@ -58,16 +60,16 @@ class GameLogic:
             while not (0 < current_move < 7) or board.state[current_move] == 0:
                 if board.state[current_move] == 0:
                     print("You can not choose a bucket with 0 stones.")
-                current_move = int(input("Enter bucket number: "))
+                current_move = int(input("Real player, enter bucket number: "))
                 if not (0 < current_move < 7):
                     print("Please enter a number between 1 and 6")
         else:
             while not (7 < current_move < 14) or board.state[current_move] == 0:
                 if board.state[current_move] == 0:
                     print("You can not choose a bucket with 0 stones.")
-                current_move = int(input("Enter bucket number: "))
+                current_move = int(input("AI, enter bucket number: "))
                 if not (7 < current_move < 14):
-                    print("Please enter a number between 7 and 14")
+                    print("Please enter a number between 7 and 13")
 
         return current_move
 
@@ -88,19 +90,19 @@ class GameLogic:
                 has_move = True
                 while has_move:
                     move = self.get_input(True, board)
-                    board, one_more_move = self.move(board, move, True)
-                    has_move = one_more_move
+                    board, has_move = self.move(board, move, True)
                     player_starts = False
+                    board.print(self.game_ended(board))
             # AI makes move
             else:
                 has_move = True
                 while has_move:
                     move = self.get_input(False, board)
-                    board, one_more_move = self.move(board, move, False)
-                    has_move = one_more_move
+                    board, has_move = self.move(board, move, False)
                     player_starts = True
+                    board.print(self.game_ended(board))
 
-            board.print(self.game_ended(board))
+
 
             # check if the game is over
             if self.game_ended(board):
