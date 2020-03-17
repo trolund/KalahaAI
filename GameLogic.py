@@ -31,9 +31,6 @@ class GameLogic:
                 move_again = True
 
             i = self.next_bucket(i)
-
-
-
         return move_again, i;
 
     def next_bucket(self, current_bucket):
