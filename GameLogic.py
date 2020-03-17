@@ -4,7 +4,7 @@ class GameLogic:
 
     def move(self, board, n, realplayer):
         # operations on board
-        move_again, i = self.one_step(board, n)
+        move_again, i = self.one_step(board, n, realplayer)
         if realplayer:
             if board.state[i] == 1 and (7 > i > 0):
                 self.get_opposite_points(n, board, realplayer)
@@ -16,18 +16,20 @@ class GameLogic:
 
         return board, move_again
 
-    def one_step(self, board, n):
+    def one_step(self, board, n, realplayer):
         move_again = False
         hand_count = board.state[n]
         board.state[n] = 0
-        i = n + 1
+        i = self.next_bucket(n) # ungå at smide kule i samme pit som man tager fra.
         while not hand_count == 0:
             board.state[i] = board.state[i] + 1
             hand_count = hand_count - 1
             i = self.next_bucket(i)
 
             move_again = False
-            if n == board.PLAYER_SCORE:
+            if n == board.PLAYER_SCORE and realplayer:
+                move_again = True
+            if n == board.AI_SCORE and not realplayer:
                 move_again = True
 
         return move_again, i;
