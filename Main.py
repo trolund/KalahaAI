@@ -24,10 +24,15 @@ def result(state, action):
                 i = 0
             state[0][i] += 1
             stones_in_pit -= 1
-        if (0 <= i <= 5 and state[0][i] == 1) or i == 6:  # Hvis den endelige pit man lander i har 1 sten, så får man
+        if i == 6:  # Hvis den endelige pit man lander i har 1 sten, så får man
             # en tur mere. Eller hvis man lander i ens store, så får man også en tur mere.
             state[1] = True
             return state
+        elif 0 <= i <= 5:
+            pos = 14 - i
+            state[0][6] += state[0][i] + state[0][pos]
+            state[0][pos] = 0
+            state[0][i] = 0
         else:
             state[1] = False
             return state
@@ -40,10 +45,16 @@ def result(state, action):
                 i = 7
             state[0][i] += 1
             stones_in_pit -= 1
-        if (7 <= i <= 12 and state[0][i] == 1) or i == 13:  # Hvis den endelige pit man lander i har 1 sten, så får man
+        if i == 13:  # Hvis den endelige pit man lander i har 1 sten, så får man
             # en tur mere. Eller hvis man lander i ens store, så får man også en tur mere.
             state[1] = False
             return state
+        elif 7 <= i <= 12:
+            pos = 14 - i
+
+            state[0][13] += state[0][i] + state[0][pos]
+            state[0][pos] = 0
+            state[0][i] = 0
         else:
             state[1] = True
             return state
