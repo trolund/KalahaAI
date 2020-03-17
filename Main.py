@@ -24,7 +24,7 @@ def result(state, action):
                 i = 0
             state[0][i] += 1
             stones_in_pit -= 1
-        if (0 <= i <= 5 and state[0][i] == 1) or i == 6: # Hvis den endelige pit man lander i har 1 sten, så får man
+        if (0 <= i <= 5 and state[0][i] == 1) or i == 6:  # Hvis den endelige pit man lander i har 1 sten, så får man
             # en tur mere. Eller hvis man lander i ens store, så får man også en tur mere.
             state[1] = True
             return state
@@ -65,7 +65,12 @@ def terminal_test(state):
 
 
 def utility(state):
-    return sum(state[0][0:6]) - sum(state[0][7:13])
+    if state[0][6] > state[0][13]:
+        return 0
+    elif state[0][6] == state[0][13]:
+        return 0.5
+    else:
+        return 1
 
 
 def mini_max(state, depth=2):
@@ -97,6 +102,7 @@ def min_value(state):
         v = min(v, max_value(result(state, action)))
     return v
 
+
 if __name__ == '__main__':
     board = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]  # Initial state (s0)
     player_turn = True  # Player starts
@@ -118,13 +124,20 @@ if __name__ == '__main__':
             state = result(state, int(selected_pit))
         else:
             print('---------- A.I\'s turn ----------')
-            state = result(state, mini_max(state))
+            pit_list = actions(state)
+            available_pits = ''
+            for i in range(len(pit_list)):  # laver for loopet for at udplukke hver pit og lave det om til en streng
+                # som jeg kan udskrive to linjer længere nede
+                available_pits += pit_list[i].__str__() + ', '
+            print('Choose a pit.\nYou can choose: ' + available_pits)
+            selected_pit = input()
+            while selected_pit.isdigit() and (selected_pit in pit_list):
+                print('You must choose between: ' + available_pits)
+                selected_pit = input()
+            state = result(state, int(selected_pit))
+            # state = result(state, mini_max(state))
         print(state)
 
     print('----------------------------------------------------------------------')
     print(utility(state))
     print('----------------------------------------------------------------------')
-
-
-
-
