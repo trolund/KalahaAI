@@ -1,15 +1,13 @@
 class Board:
-    AI_SCORE = 0
-    PLAYER_SCORE = 7
-
-    state = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    player = [0, 0, 0, 0, 0, 0, 0]
+    ai = [0, 0, 0, 0, 0, 0, 0]
 
     def __init__(self):
         self.state = self.default_init(4)
 
     def default_init(self, start_value):
         return [0, start_value, start_value, start_value, start_value, start_value, start_value,
-               0, start_value, start_value, start_value, start_value, start_value, start_value]
+                0, start_value, start_value, start_value, start_value, start_value, start_value]
 
     def player_points(self, gameover):
         if gameover:
