@@ -28,7 +28,7 @@ def result(state, action):
             # en tur mere. Eller hvis man lander i ens store, så får man også en tur mere.
             state[1] = True
             return state
-        elif 0 <= i <= 5:
+        elif 0 <= i <= 5 and state[0][i] == 1:
             pos = 14 - i
             state[0][6] += state[0][i] + state[0][pos]
             state[0][pos] = 0
@@ -49,7 +49,7 @@ def result(state, action):
             # en tur mere. Eller hvis man lander i ens store, så får man også en tur mere.
             state[1] = False
             return state
-        elif 7 <= i <= 12:
+        elif 7 <= i <= 12 and state[0][i] == 1:
             pos = 14 - i
 
             state[0][13] += state[0][i] + state[0][pos]
