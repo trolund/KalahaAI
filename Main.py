@@ -29,10 +29,12 @@ def result(state, action):
             state[1] = True
             return state
         elif 0 <= i <= 5 and state[0][i] == 1:
-            pos = 14 - i
-            state[0][6] += state[0][i] + state[0][pos]
-            state[0][pos] = 0
-            state[0][i] = 0
+            state[1] = True
+            return state
+            #  pos = 13 - i
+            #  state[0][6] += state[0][i] + state[0][pos]
+            #  state[0][pos] = 0
+            #  state[0][i] = 0
         else:
             state[1] = False
             return state
@@ -50,11 +52,12 @@ def result(state, action):
             state[1] = False
             return state
         elif 7 <= i <= 12 and state[0][i] == 1:
-            pos = 14 - i
-
-            state[0][13] += state[0][i] + state[0][pos]
-            state[0][pos] = 0
-            state[0][i] = 0
+            state[1] = False
+            return state
+            #  pos = 13 - i
+            #  state[0][13] += state[0][i] + state[0][pos]
+            #  state[0][pos] = 0
+            #  state[0][i] = 0
         else:
             state[1] = True
             return state
