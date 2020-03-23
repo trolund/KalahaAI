@@ -62,12 +62,12 @@ def result(state, action):
             #  state[0][i] = 0
         else:
             state[1] = True
-        print(state)
+        #  print(state)
         return state
 
 
 def terminal_test(state):
-    #  print("State?: ", state)
+    print("State?: ", state)
     if sum(state[0][7:]) == 0 or sum(state[0][0:6]) == 0:
         remaining_player_points = 0
         remaining_ai_points = 0
@@ -99,13 +99,15 @@ def mini_max(state):
         for action in actions(state):
             #  return max_value(mini_max(result(state, action), depth - 1))
             utilities.append(min_value(result(state, action)))
-            maxValue = min(utilities)
-            return utilities.index(maxValue)
+            minValue = min(utilities)
+            print(minValue)
+            return utilities.index(minValue)
     else:
         for action in actions(state):
             #  return min_value(mini_max(result(state, action), depth - 1))
             utilities.append(max_value(result(state, action)))
             maxValue = max(utilities)
+            print(maxValue)
             return utilities.index(maxValue)
 
 
@@ -151,7 +153,7 @@ if __name__ == '__main__':
             #  state = result(state, ai_move(state))
             copyState = state
             state = result(state, mini_max(copyState))
-        #  print(state)
+        print(state)
 
     print('----------------------------------------------------------------------')
     print(utility(state))
