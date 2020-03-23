@@ -3,19 +3,19 @@ from Enum.BoardPositions import BoardPositions
 
 
 class Board:
-    human_player = Player("Peter", BoardPositions.PlayerPosition)
-    ai_player = Player("AI", BoardPositions.AIPosition)
+    human_player = Player("Peter", BoardPositions.PlayerPosition, 4)
+    ai_player = Player("AI", BoardPositions.AIPosition, 4)
 
-    humanTurn = True
+    human_turn = True
     GameFinished = False
 
-    pit_amount = 6
+    current_game_state = []
 
     def change_turn(self):
-        if self.humanTurn:
-            self.humanTurn = False
+        if self.human_turn:
+            self.human_turn = False
         else:
-            self.humanTurn = True
+            self.human_turn = True
 
     def check_game_end(self):
         if not self.human_player.pits or not self.ai_player.pits:  # In Python, all empty lists are False.
@@ -25,58 +25,45 @@ class Board:
         return [i for i, v in enumerate(pits) if v > 0]
 
     def get_active_player(self):  # Get active player's identity.
-        if self.humanTurn:
+        if self.human_turn:
             return BoardPositions.PlayerPosition
         else:
             return BoardPositions.AIPosition
 
-    def move_stones(self, pit_number):
-        pit_side = self.get_active_player()
-        if pit_side == BoardPositions.PlayerPosition:
-            stone_amount = self.human_player.pits[pit_number]
+    def get_current_game_state(self):
+        if self.human_turn:
+            game_state = []
+            game_state.extend(self.human_player.pits.StonePits)
+            game_state.append(self.human_player.kalaha.score)
+            game_state.extend(self.ai_player.pits.StonePits)
+            game_state.append(self.ai_player.kalaha.score)
+            return game_state
+
         else:
-            stone_amount = self.ai_player.pits[pit_number]
+            game_state = []
+            game_state.extend(self.ai_player.pits.StonePits)
+            game_state.append(self.ai_player.kalaha.score)
+            game_state.extend(self.human_player.pits.StonePits)
+            game_state.append(self.human_player.kalaha.score)
+            return game_state
 
-        if pit_side == BoardPositions.PlayerPosition:  # Case human player
-            if stone_amount >= len(
-                    self.human_player.pits.StonePits) - pit_number + 1:  # Case A: Amount of stones smaller/equal to remaining pits
-                self.human_player.pits.StonePits[pit_number] = 0
-                for i in self.human_player.pits:
-                    self.human_player.pits[i] += 1
-            elif stone_amount == len(
-                    self.human_player.pits.StonePits) - pit_number + 1 + 1:  # Case B: Amount of stones equal to remaining pits + 1
-                self.human_player.pits.StonePits[pit_number] = 0
-                for i in self.human_player.pits:
-                    self.human_player.pits[i] += 1
-                self.human_player.kalaha += 1
-            else:  # Case C: Amount of stones exceeds remaining pits, moves to opponents side.
-                self.human_player.pits.StonePits[pit_number] = 0
-                for i in range(self.human_player.pits[pit_number], self.pit_amount):
-                    self.human_player.pits[i] += 1
-                    stone_amount -= 1
-                self.human_player.kalaha += 1
-                for i in range(self.ai_player.pits[0], self.ai_player.pits[stone_amount]):
-                    self.ai_player.pits[i] += 1
+    def update_game_state(self, game_state):
+        self.current_game_state = game_state
 
-        if pit_side == BoardPositions.AIPosition:  # Case ai player
-            if stone_amount <= len(
-                    self.ai_player.pits.StonePits) - pit_number + 1:  # Case A: Amount of stones smaller/equal to remaining pits
-                self.ai_player.pits.StonePits[pit_number] = 0
-                self.ai_player.pits[pit_number:] += 1
-            elif stone_amount == len(self.ai_player.pits.StonePits) - (
-                    pit_number + 1) + 1:  # Case B: Amount of stones equal to remaining pits + 1
-                self.ai_player.pits.StonePits[pit_number] = 0
-                self.ai_player.pits[pit_number:] += 1
-                self.ai_player.kalaha += 1
-            else:  # Case C: Amount of stones exceeds remaining pits, moves to opponents side.
-                self.ai_player.pits.StonePits[pit_number] = 0
+    def move_stones(self, pit_number):
+        game_state = self.get_current_game_state()
+        stone_amount = game_state[pit_number]
+        game_state[pit_number] = 0
 
-                for i in range(self.ai_player.pits[pit_number], self.pit_amount):
-                    self.ai_player.pits[pit_number:] += 1
-                    stone_amount -= 1
-                self.ai_player.kalaha += 1
-                for i in range(self.human_player.pits[0], self.human_player.pits[stone_amount]):
-                    self.human_player.pits[i] += 1
+        while stone_amount > 0:
+            pit_number += 1
+            if pit_number is 13:
+                pit_number = 0
+            game_state[pit_number] += 1
+            stone_amount -= 1
+
+        self.update_game_state(game_state)
+        self.change_turn()
 
     def get_game_score(self):
         if self.ai_player.kalaha > self.human_player.kalaha:

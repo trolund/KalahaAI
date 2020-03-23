@@ -6,9 +6,9 @@ class Player:
     name = ""
     board_position = None
 
-    pits = RowOfPits(4)
     kalaha = Kalaha
 
-    def __init__(self, name, board_position):
+    def __init__(self, name, board_position, stone_amount):
         self.name = name
         self.boardPosition = board_position
+        self.pits = RowOfPits(stone_amount)
