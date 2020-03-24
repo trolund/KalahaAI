@@ -33,16 +33,11 @@ def result(state, action):
             state[1] = True
             #  return state
         elif 0 <= i <= 5 and state[0][i] == 1:
-            state[1] = True
-            #  return state
-            #  pos = 13 - i
-            #  state[0][6] += state[0][i] + state[0][pos]
-            #  state[0][pos] = 0
-            #  state[0][i] = 0
+            get_opposite_points(i, state)
+
         else:
             state[1] = False
             #  return state
-        return state
     else:
         while not stones_in_pit == 0:  # Læg 1 sten i den næste pit
             i += 1
@@ -57,20 +52,23 @@ def result(state, action):
             state[1] = False
             #  return state
         elif 7 <= i <= 12 and state[0][i] == 1:
-            state[1] = False
-            #  return state
-            #  pos = 13 - i
-            #  state[0][13] += state[0][i] + state[0][pos]
-            #  state[0][pos] = 0
-            #  state[0][i] = 0
+            get_opposite_points(i, state)
         else:
             state[1] = True
-        #  print(state)
-        return state
+    return state
 
+def get_opposite_points(n, state):
+        if n != 6 or n != 13:
+            pos = 13 - (n + 1)
+
+            if state[1]:
+                state[0][6] = state[0][6] + state[0][pos]
+            else:
+                state[0][13] = state[0][13] + state[0][pos]
+
+            state[0][pos] = 0
 
 def terminal_test(state):
-   # print("State?: ", state)
     if sum(state[0][7:]) == 0 or sum(state[0][0:6]) == 0:
         remaining_player_points = 0
         remaining_ai_points = 0
@@ -135,6 +133,20 @@ def min_value(state, depth=2):
     return v
 
 
+def printState(state):
+    print("  ", end="")
+    print(*["%2d" % x for x in reversed(state[0][7:13])], sep=" |")
+    print("%2d                      %2d" % (state[0][13], state[0][6]))
+    print("  ", end="")
+    print(*["%2d" % x for x in state[0][0:6]], sep=" |")
+
+
+def printEndgame(state):
+    print(" - - - - - - - - - - - - - - ")
+    print("AI                      You")
+    print("%2d                      %2d" % (state[0][13], state[0][6]))
+    print(" - - - - - - - - - - - - - - ")
+
 if __name__ == '__main__':
     board = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]  # Initial state (s0)
     player_turn = True  # Player starts
@@ -159,8 +171,9 @@ if __name__ == '__main__':
             #  state = result(state, ai_move(state))
             copyState = copy.deepcopy(state)
             state = result(state, mini_max(copyState))
-        print(state)
+        # print(state)
+        printState(state)
 
-    print('----------------------------------------------------------------------')
-    print(utility(state))
-    print('----------------------------------------------------------------------')
+    printEndgame(state)
+
+
