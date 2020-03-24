@@ -1,3 +1,6 @@
+import copy
+import numpy as np
+
 def actions(state):
     legal_moves = []
     if state[1]:
@@ -67,7 +70,7 @@ def result(state, action):
 
 
 def terminal_test(state):
-    print("State?: ", state)
+   # print("State?: ", state)
     if sum(state[0][7:]) == 0 or sum(state[0][0:6]) == 0:
         remaining_player_points = 0
         remaining_ai_points = 0
@@ -96,19 +99,22 @@ def mini_max(state):
     utilities = []
 
     if state[1]:  # Player
+
         for action in actions(state):
             #  return max_value(mini_max(result(state, action), depth - 1))
-            utilities.append(min_value(result(state, action)))
-            minValue = min(utilities)  # [0, 0.5, 1, 0.5, 0] --> 2
-            print(minValue)
-            return utilities.index(minValue)
+            utilities.append((min_value(result(state, action)), action))
+            # theAction = utilities.index(minValue)[1]
+        minValue = min(utilities)[1]  # [0, 0.5, 1, 0.5, 0] --> 2
+        print(minValue)
+        return minValue
     else:  # A.I
         for action in actions(state):
             #  return min_value(mini_max(result(state, action), depth - 1))
-            utilities.append(max_value(result(state, action)))
-            maxValue = max(utilities)
-            print(maxValue)
-            return utilities.index(maxValue)
+            utilities.append((max_value(result(state, action)), action))
+            # theAction = utilities.index(maxValue)[1]
+        maxValue = max(utilities)[1]
+        print(maxValue)
+        return maxValue
 
 
 def max_value(state, depth=2):
@@ -151,7 +157,7 @@ if __name__ == '__main__':
         else:
             print('---------- A.I\'s turn ----------')
             #  state = result(state, ai_move(state))
-            copyState = state
+            copyState = copy.deepcopy(state)
             state = result(state, mini_max(copyState))
         print(state)
 
