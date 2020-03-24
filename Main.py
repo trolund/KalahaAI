@@ -70,7 +70,7 @@ def get_opposite_points(n, state):
             state[0][n] = 0
 
 def terminal_test(state):
-    if sum(state[0][7:]) == 0 or sum(state[0][0:6]) == 0:
+    if sum(state[0][7:13]) == 0 or sum(state[0][0:6]) == 0:
         remaining_player_points = 0
         remaining_ai_points = 0
         for i in range(6):
