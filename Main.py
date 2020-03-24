@@ -1,5 +1,4 @@
 import copy
-import numpy as np
 
 def actions(state):
     legal_moves = []
@@ -34,7 +33,7 @@ def result(state, action):
             #  return state
         elif 0 <= i <= 5 and state[0][i] == 1:
             get_opposite_points(i, state)
-
+            state[1] = False
         else:
             state[1] = False
             #  return state
@@ -53,6 +52,7 @@ def result(state, action):
             #  return state
         elif 7 <= i <= 12 and state[0][i] == 1:
             get_opposite_points(i, state)
+            state[1] = True
         else:
             state[1] = True
     return state
@@ -62,11 +62,12 @@ def get_opposite_points(n, state):
             pos = 13 - (n + 1)
 
             if state[1]:
-                state[0][6] = state[0][6] + state[0][pos]
+                state[0][6] += state[0][pos] + state[0][n]
             else:
-                state[0][13] = state[0][13] + state[0][pos]
+                state[0][13] += state[0][pos] + state[0][n]
 
             state[0][pos] = 0
+            state[0][n] = 0
 
 def terminal_test(state):
     if sum(state[0][7:]) == 0 or sum(state[0][0:6]) == 0:
