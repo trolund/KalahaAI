@@ -1,6 +1,5 @@
 import copy
 
-
 def actions(state):
     legal_moves = []
     if state[1]:
@@ -98,14 +97,14 @@ def utility(state):
 # Definer evaluation funktion
 
 
-def mini_max(state):
+def mini_max(state, depth=2):
     utilities = []
 
     if state[1]:  # Player
 
         for action in actions(state):
             #  return max_value(mini_max(result(state, action), depth - 1))
-            utilities.append((min_value(result(state, action)), action))
+            utilities.append((min_value(result(state, action), depth), action))
             # theAction = utilities.index(minValue)[1]
         minValue = min(utilities)[1]  # [0, 0.5, 1, 0.5, 0] --> 2
         print(minValue)
@@ -113,14 +112,14 @@ def mini_max(state):
     else:  # A.I
         for action in actions(state):
             #  return min_value(mini_max(result(state, action), depth - 1))
-            utilities.append((max_value(result(state, action)), action))
+            utilities.append((max_value(result(state, action), depth), action))
             # theAction = utilities.index(maxValue)[1]
         maxValue = max(utilities)[1]
         print(maxValue)
         return maxValue
 
 
-def max_value(state, depth=2):
+def max_value(state, depth):
     if terminal_test(state) or depth == 0:
         return utility(state)
     v = -99999999
@@ -129,7 +128,7 @@ def max_value(state, depth=2):
     return v
 
 
-def min_value(state, depth=2):
+def min_value(state, depth):
     if terminal_test(state):
         return utility(state)
     v = 99999999
@@ -201,11 +200,30 @@ def print_endgame(state):
     print(" - - - - - - - - - - - - - - ")
 
 
+def game_setup():
+    print(" - Setup the AI - ")
+    print("Who starts the game:")
+    print("0 - You")
+    print("1 - The AI")
+    player_turn = int(input()) == 0
+    print("Enter algo to use, options are:")
+    print("0 - Minimax")
+    print("1 - Minimax with pruning")
+    algo = int(input())
+    print("Enter tree depth:")
+    depth = int(input())
+    return (player_turn, algo, depth)
+
+
 if __name__ == '__main__':
+    setup = game_setup()
     board = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]  # Initial state (s0)
-    player_turn = True  # Player starts
+    player_turn = setup[0]  # Player starts
     state = [board, player_turn]
-    print(state)
+    depth = setup[2]
+    algo = setup[1]
+    print(state, setup)
+    input()
     while not terminal_test(state):  # while game is NOT over
         if state[1]:
             print('---------- Player\'s turn ----------')
@@ -224,9 +242,10 @@ if __name__ == '__main__':
             print('---------- A.I\'s turn ----------')
             #  state = result(state, ai_move(state))
             copyState = copy.deepcopy(state)
-            #  state = result(state, mini_max(copyState))   # Alm. mini-max
-            state = result(state, alpha_beta_search(copyState))
-        # print(state)
+            if algo == 0:
+                state = result(state, mini_max(copyState, depth))  # Alm. mini-max
+            elif algo == 1:
+                state = result(state, alpha_beta_search(copyState, depth))
         print_state(state)
 
     print_endgame(state)
