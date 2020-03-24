@@ -98,43 +98,48 @@ def utility(state):
 # Definer evaluation funktion
 
 
-def mini_max(state, depth=2):
+def mini_max(state):
     utilities = []
 
     if state[1]:  # Player
-
         for action in actions(state):
-            #  return max_value(mini_max(result(state, action), depth - 1))
-            utilities.append((min_value(result(state, action), depth), action))
-            # theAction = utilities.index(minValue)[1]
-        minValue = min(utilities)[1]  # [0, 0.5, 1, 0.5, 0] --> 2
+            newState = result(state, action)
+            if newState[1]:
+                utilities.append((min_value(newState), action))  # Spillerens tur
+            else:
+                utilities.append((max_value(newState), action))  # A.I
+        minValue = min(utilities)[1]
+        print(utilities)
         print(minValue)
         return minValue
     else:  # A.I
         for action in actions(state):
-            #  return min_value(mini_max(result(state, action), depth - 1))
-            utilities.append((max_value(result(state, action), depth), action))
-            # theAction = utilities.index(maxValue)[1]
+            newState = result(state, action)
+            if newState[1]:
+                utilities.append((min_value(newState), action))  # Spillerens tur
+            else:
+                utilities.append((max_value(newState), action))  # A.I
         maxValue = max(utilities)[1]
+        print(utilities)
         print(maxValue)
         return maxValue
 
 
-def max_value(state, depth):
-    if terminal_test(state) or depth == 0:
+def max_value(state):
+    if terminal_test(state):
         return utility(state)
     v = -99999999
     for action in actions(state):
-        v = max(v, min_value(result(state, action), depth - 1))
+        v = max(v, min_value(result(state, action)))
     return v
 
 
-def min_value(state, depth):
+def min_value(state):
     if terminal_test(state):
         return utility(state)
     v = 99999999
     for action in actions(state):
-        v = min(v, max_value(result(state, action), depth - 1))
+        v = min(v, max_value(result(state, action)))
     return v
 
 
@@ -245,7 +250,7 @@ if __name__ == '__main__':
             copyState = copy.deepcopy(state)
             start = time.monotonic_ns()
             if algo == 0:
-                state = result(state, mini_max(copyState, depth))  # Alm. mini-max
+                state = result(state, mini_max(copyState))  # Alm. mini-max
             elif algo == 1:
                 state = result(state, alpha_beta_search(copyState, depth))
             end = time.monotonic_ns()
