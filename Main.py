@@ -1,5 +1,6 @@
 import copy
 
+
 def actions(state):
     legal_moves = []
     if state[1]:
@@ -57,6 +58,7 @@ def result(state, action):
             state[1] = True
     return state
 
+
 def get_opposite_points(n, state):
         if n != 6 or n != 13:
             pos = 13 - (n + 1)
@@ -68,6 +70,7 @@ def get_opposite_points(n, state):
 
             state[0][pos] = 0
             state[0][n] = 0
+
 
 def terminal_test(state):
     if sum(state[0][7:13]) == 0 or sum(state[0][0:6]) == 0:
@@ -93,6 +96,7 @@ def utility(state):
 
 
 # Definer evaluation funktion
+
 
 def mini_max(state):
     utilities = []
@@ -134,7 +138,55 @@ def min_value(state, depth=2):
     return v
 
 
-def printState(state):
+def alpha_beta_search(state, depth=2):
+    #  v = max_value_alpha_beta(state, -9999, 9999)
+
+    alpha = -9999
+    beta = 9999
+
+    utilities = []
+
+    if state[1]:  # Player
+        for action in actions(state):
+            utilities.append((min_value_alpha_beta(result(state, action), alpha, beta, depth), action))
+        minValue = min(utilities)[1]  # [0, 0.5, 1, 0.5, 0] --> 2
+        print(minValue)
+        return minValue
+    else:  # A.I
+        for action in actions(state):
+            utilities.append((max_value_alpha_beta(result(state, action), alpha, beta, depth), action))
+        maxValue = max(utilities)[1]
+        print(maxValue)
+        return maxValue
+
+
+def max_value_alpha_beta(state, alpha, beta, depth):
+    if terminal_test(state) or depth == 0:
+        return utility(state)
+
+    v = alpha
+    for action in actions(state):
+        v = max(v, min_value_alpha_beta(result(state, action), alpha, beta, depth - 1))
+        if v >= beta:
+            return v
+        alpha = max(alpha, v)
+    return v
+
+
+def min_value_alpha_beta(state, alpha, beta, depth):
+    if terminal_test(state) or depth == 0:
+        return utility(state)
+
+    v = beta
+    for action in actions(state):
+        v = min(v, max_value_alpha_beta(result(state, action), alpha, beta, depth - 1))
+        if v <= alpha:
+            return v
+        beta = min(beta, v)
+    return v
+
+
+def print_state(state):
     print("  ", end="")
     print(*["%2d" % x for x in reversed(state[0][7:13])], sep=" |")
     print("%2d                      %2d" % (state[0][13], state[0][6]))
@@ -142,11 +194,12 @@ def printState(state):
     print(*["%2d" % x for x in state[0][0:6]], sep=" |")
 
 
-def printEndgame(state):
+def print_endgame(state):
     print(" - - - - - - - - - - - - - - ")
     print("AI                      You")
     print("%2d                      %2d" % (state[0][13], state[0][6]))
     print(" - - - - - - - - - - - - - - ")
+
 
 if __name__ == '__main__':
     board = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]  # Initial state (s0)
@@ -171,10 +224,11 @@ if __name__ == '__main__':
             print('---------- A.I\'s turn ----------')
             #  state = result(state, ai_move(state))
             copyState = copy.deepcopy(state)
-            state = result(state, mini_max(copyState))
+            #  state = result(state, mini_max(copyState))   # Alm. mini-max
+            state = result(state, alpha_beta_search(copyState))
         # print(state)
-        printState(state)
+        print_state(state)
 
-    printEndgame(state)
+    print_endgame(state)
 
 
