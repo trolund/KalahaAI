@@ -1,4 +1,5 @@
 import copy
+import time
 
 def actions(state):
     legal_moves = []
@@ -242,10 +243,13 @@ if __name__ == '__main__':
             print('---------- A.I\'s turn ----------')
             #  state = result(state, ai_move(state))
             copyState = copy.deepcopy(state)
+            start = time.monotonic_ns()
             if algo == 0:
                 state = result(state, mini_max(copyState, depth))  # Alm. mini-max
             elif algo == 1:
                 state = result(state, alpha_beta_search(copyState, depth))
+            end = time.monotonic_ns()
+            print("time taken: " + str((end - start) / 1000000) + "ms")
         print_state(state)
 
     print_endgame(state)
