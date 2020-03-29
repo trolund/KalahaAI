@@ -10,11 +10,19 @@ print(gameboard.ai_player.kalaha.score)
 
 print("Printing gameboard:")
 
-print(gameboard.get_current_game_state())
+# print(gameboard.get_current_game_state())
 
-gameboard.move_stones(0)
 
+gameboard.print()
+# gameboard.move_stones(0)
+
+
+gameboard.move_stones(2)
+gameboard.print()
 print("Printing gameboard after change:")
 print(gameboard.get_current_game_state())
 
-gameboard.move_stones(1)
+gameboard.move_stones(2)
+gameboard.print()
+print("Printing gameboard after change:")
+print(gameboard.get_current_game_state())
