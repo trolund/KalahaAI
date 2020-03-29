@@ -3,11 +3,12 @@ from Enum.BoardPositions import BoardPositions
 
 
 class Board:
-    human_player = Player("Peter", BoardPositions.Player, 4, 0)
-    ai_player = Player("AI", BoardPositions.Computer, 4, 0)
-
-    human_turn = True
     GameFinished = False
+
+    def __init__(self, human_name, stone_amount, human_turn):
+        self.human_player = Player(human_name, BoardPositions.Player, stone_amount)
+        self.ai_player = Player("AI", BoardPositions.Computer, stone_amount)
+        self.human_turn = human_turn
 
     def change_turn(self):
         self.human_turn = not self.human_turn
@@ -33,13 +34,18 @@ class Board:
             game_state = []
             game_state.extend(self.human_player.pits.StonePits)
             game_state.append(self.human_player.kalaha.score)
+            temp = self.ai_player.pits.StonePits
+            temp.reverse()
             game_state.extend(self.ai_player.pits.StonePits)
             game_state.append(self.ai_player.kalaha.score)
             return game_state
+
         else:
             game_state = []
             game_state.extend(self.ai_player.pits.StonePits)
             game_state.append(self.ai_player.kalaha.score)
+            temp = self.human_player.pits.StonePits
+            temp.reverse()
             game_state.extend(self.human_player.pits.StonePits)
             game_state.append(self.human_player.kalaha.score)
             return game_state
@@ -48,50 +54,50 @@ class Board:
         if self.human_turn:
             self.human_player.pits.StonePits = game_state[0:6]
             self.human_player.kalaha.score = game_state[6]
-            temp = game_state[7:13]
-            temp.reverse()
-            self.ai_player.pits.StonePits = temp
+            self.ai_player.pits.StonePits = game_state[7:13]
             self.ai_player.kalaha.score = game_state[13]
         else:
             self.ai_player.pits.StonePits = game_state[0:6]
             self.ai_player.kalaha.score = game_state[6]
-            temp = game_state[7:13]
-            temp.reverse()
-            self.human_player.pits.StonePits = temp
+            self.human_player.pits.StonePits = game_state[7:13]
             self.human_player.kalaha.score = game_state[13]
 
     def move_stones(self, pit_number):
         game_state = self.get_current_game_state()
-        stone_amount = game_state[pit_number]
-        print("Selected pit: " + str(pit_number) + ". Moving " + str(stone_amount) + " stones.")
-        game_state[pit_number] = 0
-
-        if stone_amount is 0:  # Player selected an empty pit.
-            print("Invalid pit choice. Please select a pit with stones present.")
+        if pit_number < 0 or pit_number > 5:
+            print("Invalid pit choice. Please select a valid pit.")
         else:
-            while stone_amount > 0:
-                pit_number += 1
-                if pit_number is 13:
-                    pit_number = 0
-                game_state[pit_number] += 1
-                stone_amount -= 1
+            stone_amount = game_state[pit_number]
+            print("Selected pit: " + str(pit_number) + ". Moving " + str(stone_amount) + " stones.")
+            game_state[pit_number] = 0
 
-            self.update_game_state(game_state)
-            self.change_turn()
+            if stone_amount is 0:  # Player selected an empty pit.
+                print("Invalid pit choice. Please select a pit with stones present.")
+            else:
+                while stone_amount > 0:
+                    pit_number += 1
+                    if pit_number is 13:
+                        pit_number = 0
+                    game_state[pit_number] += 1
+                    stone_amount -= 1
+
+                self.update_game_state(game_state)
+                self.change_turn()
 
     def print(self):  # Continuously reorients the game board after which player's turn it is.
         if not self.GameFinished:
             if self.human_turn:
                 print("     Game board      ")
-                print("    Player's turn    ")
+                print("    "+self.human_player.name + "'s turn    ")
                 print("#####################")
                 temp_list = self.ai_player.pits.StonePits
                 temp_list.reverse()
                 print(*temp_list, sep=" | ")
                 print(str(self.ai_player.kalaha.score) + "                   " + str(self.human_player.kalaha.score))
-                print(*self.human_player.pits.StonePits, sep=" | ")
-                print("#####################")
-                print(self.list_available_pits())
+                temp_list2 = self.human_player.pits.StonePits
+                temp_list2.reverse()
+                print(*temp_list2, sep=" | ")
+                print("#####################\nAvailable pits: "+str(self.list_available_pits()))
 
             else:
                 print("     Game board      ")
@@ -101,9 +107,10 @@ class Board:
                 temp_list.reverse()
                 print(*temp_list, sep=" | ")
                 print(str(self.human_player.kalaha.score) + "                   " + str(self.ai_player.kalaha.score))
-                print(*self.ai_player.pits.StonePits, sep=" | ")
-                print("#####################")
-                print(self.list_available_pits())
+                temp_list2 = self.ai_player.pits.StonePits
+                temp_list2.reverse()
+                print(*temp_list2, sep=" | ")
+                print("#####################\nAvailable pits: "+str(self.list_available_pits()))
 
         else:
             scoreboard = self.get_game_score()
@@ -118,5 +125,5 @@ class Board:
         if self.ai_player.kalaha.score > self.human_player.kalaha.score:
             game_winner = BoardPositions.Computer.name
         else:
-            game_winner = BoardPositions.Player.name
+            game_winner = self.human_player.name
         return self.human_player.kalaha.score, self.ai_player.kalaha.score, game_winner
