@@ -1,6 +1,7 @@
 import copy
 import time
 
+
 def actions(state):
     legal_moves = []
     if state[1]:
@@ -11,13 +12,11 @@ def actions(state):
         for i in range(7, 13):
             if state[0][i] != 0:
                 legal_moves.append(i)
-    #  print("moves: " + legal_moves.__str__())
     return legal_moves
 
 
 # Takes the whole tuple as state
 def result(state, action):
-    # print(state, action)
     stones_in_pit = state[0][action]
     state[0][action] = 0
     i = action
@@ -31,13 +30,11 @@ def result(state, action):
         if i == 6:  # Hvis den endelige pit man lander i har 1 sten, så får man
             # en tur mere. Eller hvis man lander i ens store, så får man også en tur mere.
             state[1] = True
-            #  return state
         elif 0 <= i <= 5 and state[0][i] == 1:
             get_opposite_points(i, state)
             state[1] = False
         else:
             state[1] = False
-            #  return state
     else:
         while not stones_in_pit == 0:  # Læg 1 sten i den næste pit
             i += 1
@@ -50,7 +47,6 @@ def result(state, action):
         if i == 13:  # Hvis den endelige pit man lander i har 1 sten, så får man
             # en tur mere. Eller hvis man lander i ens store, så får man også en tur mere.
             state[1] = False
-            #  return state
         elif 7 <= i <= 12 and state[0][i] == 1:
             get_opposite_points(i, state)
             state[1] = True
@@ -74,17 +70,24 @@ def get_opposite_points(n, state):
 
 def terminal_test(state):
     if sum(state[0][7:13]) == 0 or sum(state[0][0:6]) == 0:
+        sort_remaining_points(state)
         return True
     return False
 
-# remaining_player_points = 0
-#         remaining_ai_points = 0
-#         for i in range(6):
-#             remaining_player_points += state[0][i]
-#         for i in range(7, 13):
-#             remaining_ai_points += state[0][i]
-#         state[0][6] += remaining_player_points
-#         state[0][13] += remaining_ai_points
+
+# sort remaining points tildeler de resterende point på en spillers side til den givne spiller
+# (f.eks. hvis spilleren slutter spillet, så skal A.I'en have de point der ligger på dens side af boardet).
+def sort_remaining_points(state):
+    remaining_player_points = 0
+    remaining_ai_points = 0
+    for i in range(6):
+        remaining_player_points += state[0][i]
+        state[0][i] = 0
+    for i in range(7, 13):
+        remaining_ai_points += state[0][i]
+        state[0][i] = 0
+    state[0][6] += remaining_player_points
+    state[0][13] += remaining_ai_points
 
 
 def utility(state):
@@ -132,6 +135,7 @@ def max_value(state):
     v = -99999999
     for action in actions(state):
         v = max(v, min_value(result(state, action)))
+        # print("vMax: " + str(v))
     return v
 
 
@@ -141,12 +145,11 @@ def min_value(state):
     v = 99999999
     for action in actions(state):
         v = min(v, max_value(result(state, action)))
+        # print("vMin:" + str(v))
     return v
 
 
 def alpha_beta_search(state, depth=2):
-    #  v = max_value_alpha_beta(state, -9999, 9999)
-
     alpha = -9999
     beta = 9999
 
