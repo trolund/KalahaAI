@@ -1,13 +1,16 @@
-from GameState import Board
-from GameLogic import GameLogic
+from Game.GameController import GameController
+
+
+def main():
+    # Create game controller object
+    game_controller = GameController()
+
+    # Set up game
+    game_controller.initial_setup()
+
+    # Play game until win condition
+    game_controller.game_loop()
+
 
 if __name__ == '__main__':
-    game_logic = GameLogic()
-    print("Let the game begin!")
-    print("-------------------")
-    board = Board()
-    print("init state:")
-    game_logic.game_loop(board, True)
-
-
-
+    main()
