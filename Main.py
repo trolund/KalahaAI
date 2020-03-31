@@ -74,16 +74,17 @@ def get_opposite_points(n, state):
 
 def terminal_test(state):
     if sum(state[0][7:13]) == 0 or sum(state[0][0:6]) == 0:
-        remaining_player_points = 0
-        remaining_ai_points = 0
-        for i in range(6):
-            remaining_player_points += state[0][i]
-        for i in range(7, 13):
-            remaining_ai_points += state[0][i]
-        state[0][6] += remaining_player_points
-        state[0][13] += remaining_ai_points
         return True
     return False
+
+# remaining_player_points = 0
+#         remaining_ai_points = 0
+#         for i in range(6):
+#             remaining_player_points += state[0][i]
+#         for i in range(7, 13):
+#             remaining_ai_points += state[0][i]
+#         state[0][6] += remaining_player_points
+#         state[0][13] += remaining_ai_points
 
 
 def utility(state):
@@ -109,8 +110,8 @@ def mini_max(state):
             else:
                 utilities.append((max_value(newState), action))  # A.I
         minValue = min(utilities)[1]
-        print(utilities)
-        print(minValue)
+        print("utilities: " + str(utilities))
+        print("minValue: " + str(minValue))
         return minValue
     else:  # A.I
         for action in actions(state):
@@ -120,8 +121,8 @@ def mini_max(state):
             else:
                 utilities.append((max_value(newState), action))  # A.I
         maxValue = max(utilities)[1]
-        print(utilities)
-        print(maxValue)
+        print("utilities: " + str(utilities))
+        print("maxValue: " + str(maxValue))
         return maxValue
 
 
