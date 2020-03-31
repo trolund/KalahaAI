@@ -14,10 +14,10 @@ class Board:
         self.human_turn = not self.human_turn
 
     def check_game_end(self):
-        if sum(self.human_player.pits.StonePits) is 0:
+        if sum(self.human_player.pits.StonePits) is 0 or not self.list_available_pits():
             self.ai_player.kalaha.score += sum(self.ai_player.pits.StonePits)
             self.GameFinished = True
-        elif sum(self.ai_player.pits.StonePits) is 0:
+        elif sum(self.ai_player.pits.StonePits) is 0 or not self.list_available_pits():
             self.human_player.kalaha.score += sum(self.human_player.pits.StonePits)
             self.GameFinished = True
 
@@ -38,9 +38,10 @@ class Board:
             game_state = []
             game_state.extend(self.human_player.pits.StonePits)
             game_state.append(self.human_player.kalaha.score)
-            temp = self.ai_player.pits.StonePits
+            temp = self.ai_player.pits.StonePits.copy()  # Super important to implement .copy().
+            # Otherwise it makes a reference.
             temp.reverse()
-            game_state.extend(self.ai_player.pits.StonePits)
+            game_state.extend(temp)
             game_state.append(self.ai_player.kalaha.score)
             return game_state
 
@@ -48,9 +49,10 @@ class Board:
             game_state = []
             game_state.extend(self.ai_player.pits.StonePits)
             game_state.append(self.ai_player.kalaha.score)
-            temp = self.human_player.pits.StonePits
+            temp = self.human_player.pits.StonePits.copy()  # Super important to implement .copy().
+            # Otherwise it makes a reference.
             temp.reverse()
-            game_state.extend(self.human_player.pits.StonePits)
+            game_state.extend(temp)
             game_state.append(self.human_player.kalaha.score)
             return game_state
 
@@ -67,26 +69,47 @@ class Board:
             self.human_player.kalaha.score = game_state[13]
 
     def move_stones(self, pit_number):
+        keep_turn = False
         game_state = self.get_current_game_state()
-        if not pit_number in self.list_available_pits():  # Invalid pit selected.
+        if pit_number not in self.list_available_pits():  # Invalid pit selected.
             print("Invalid pit choice. Please select a valid pit.")
         else:
             stone_amount = game_state[pit_number]
             print("Selected pit: " + str(pit_number) + ". Moving " + str(stone_amount) + " stones.")
             game_state[pit_number] = 0
 
-            while stone_amount > 0:
+            while stone_amount > 0:  # Standard stone movement procedure.
                 pit_number += 1
                 if pit_number is 13:
                     pit_number = 0
                 game_state[pit_number] += 1
                 stone_amount -= 1
 
-            if pit_number is 6:
-                print("Last stone was added to Kalaha. Extra turn rewarded.")
+            if pit_number is 6:  # Check to see if rule of Kalaha continuety is a fulfilled.
+                print("Last stone was added to Kalaha! Extra turn rewarded.")
                 self.update_game_state(game_state)
-            else:
-                self.update_game_state(game_state)
+                keep_turn = True
+
+            elif not 0 >= pit_number <= 5:
+                if self.human_turn:
+                    if game_state[pit_number] is 1:
+                        game_state[6] += game_state[pit_number] + game_state[13 - (pit_number + 1)]
+                        game_state[pit_number] = 0
+                        game_state[13 - (pit_number + 1)] = 0
+                        self.update_game_state(game_state)
+                        keep_turn = True
+                else:
+                    if game_state[pit_number] is 1:
+                        game_state[6] += game_state[pit_number] + game_state[13 - (pit_number + 1)]
+                        game_state[pit_number] = 0
+                        game_state[13 - (pit_number + 1)] = 0
+                        self.update_game_state(game_state)
+                        keep_turn = True
+
+            self.update_game_state(game_state)
+            self.check_game_end()
+
+            if not keep_turn:
                 self.change_turn()
 
     def print(self):  # Continuously reorients the game board after which player's turn it is.

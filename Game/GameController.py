@@ -28,3 +28,5 @@ class GameController:
             self.game_board.print()
             print(self.game_board.get_current_game_state())
             self.game_board.move_stones(int(input("Please enter desired pit to move: ")))
+        else:
+            self.game_board.print()
