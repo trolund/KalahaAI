@@ -56,16 +56,16 @@ def result(state, action):
 
 
 def get_opposite_points(n, state):
-        if n != 6 or n != 13:
-            pos = 13 - (n + 1)
+    if n != 6 or n != 13:
+        pos = 13 - (n + 1)
 
-            if state[1]:
-                state[0][6] += state[0][pos] + state[0][n]
-            else:
-                state[0][13] += state[0][pos] + state[0][n]
+        if state[1]:
+            state[0][6] += state[0][pos] + state[0][n]
+        else:
+            state[0][13] += state[0][pos] + state[0][n]
 
-            state[0][pos] = 0
-            state[0][n] = 0
+        state[0][pos] = 0
+        state[0][n] = 0
 
 
 def terminal_test(state):
@@ -91,51 +91,41 @@ def sort_remaining_points(state):
 
 
 def utility(state):
-    if state[0][6] > state[0][13]:
-        return 0
-    elif state[0][6] == state[0][13]:
-        return 0.5
-    else:
-        return 1
-
+    #if state[0][6] > state[0][13]:
+    #    return 0
+    #elif state[0][6] == state[0][13]:
+    #    return 0.5
+    #else:
+    #    return 1
+    return state[0][6] - state[0][13]
 
 # Definer evaluation funktion
 
 
-def mini_max(state):
+def mini_max(state):  # return arg max a ∈ ACTIONS(s) MIN-VALUE(RESULT(state,a))
     utilities = []
-
-    if state[1]:  # Player
-        for action in actions(state):
-            newState = result(state, action)
-            if newState[1]:
-                utilities.append((min_value(newState), action))  # Spillerens tur
-            else:
-                utilities.append((max_value(newState), action))  # A.I
-        minValue = min(utilities)[1]
-        print("utilities: " + str(utilities))
-        print("minValue: " + str(minValue))
-        return minValue
-    else:  # A.I
-        for action in actions(state):
-            newState = result(state, action)
-            if newState[1]:
-                utilities.append((min_value(newState), action))  # Spillerens tur
-            else:
-                utilities.append((max_value(newState), action))  # A.I
-        maxValue = max(utilities)[1]
-        print("utilities: " + str(utilities))
-        print("maxValue: " + str(maxValue))
-        return maxValue
+    for action in actions(state):
+        # copyState = copy.deepcopy(state)
+        #  newState = result(state, action)
+        if state[1]:
+            utilities.append((min_value(state), action))  # Spillerens tur
+            # utilities.append(min_value(state))
+        else:
+            utilities.append((max_value(state), action))  # A.I
+            # utilities.append(max_value(state))
+    maxValue = max(utilities)[1]
+    # maxValue = (utilities)
+    print("utilities: " + str(utilities))
+    print("maxValue: " + str(maxValue))
+    return maxValue
 
 
 def max_value(state):
-    if terminal_test(state):
+    if terminal_test(state) or depth == 0:
         return utility(state)
     v = -99999999
     for action in actions(state):
         v = max(v, min_value(result(state, action)))
-        # print("vMax: " + str(v))
     return v
 
 
@@ -145,7 +135,6 @@ def min_value(state):
     v = 99999999
     for action in actions(state):
         v = min(v, max_value(result(state, action)))
-        # print("vMin:" + str(v))
     return v
 
 
@@ -254,13 +243,26 @@ if __name__ == '__main__':
             copyState = copy.deepcopy(state)
             start = time.monotonic_ns()
             if algo == 0:
-                state = result(state, mini_max(copyState))  # Alm. mini-max
+                ai_action = mini_max(copyState)
+                state = result(state, ai_action)  # Alm. mini-max
             elif algo == 1:
-                state = result(state, alpha_beta_search(copyState, depth))
+                state = result(state, alpha_beta_search(state, depth))
             end = time.monotonic_ns()
             print("time taken: " + str((end - start) / 1000000) + "ms")
         print_state(state)
 
     print_endgame(state)
 
-
+# Lå i mini-max funktionen
+    #    if state[1]:  # Player
+    #    for action in actions(state):
+    #        newState = result(state, action)
+    #        if newState[1]:
+    #            utilities.append((min_value(newState), action))  # Spillerens tur
+    #        else:
+    #            utilities.append((max_value(newState), action))  # A.I
+    #    minValue = min(utilities)[1]
+    #    print("utilities: " + str(utilities))
+    #    print("minValue: " + str(minValue))
+    #    return minValue
+    # else:  # A.I
