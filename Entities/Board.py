@@ -14,7 +14,8 @@ class Board:
         self.human_turn = not self.human_turn
 
     def check_game_end(self):
-        if not self.human_player.pits or not self.ai_player.pits:  # In Python, all empty lists are False.
+        if sum(self.human_player.pits.StonePits) is 0 or sum(
+                self.ai_player.pits.StonePits) is 0:  # In Python, all empty lists are False.
             self.GameFinished = True
 
     def list_available_pits(self):
@@ -64,7 +65,7 @@ class Board:
 
     def move_stones(self, pit_number):
         game_state = self.get_current_game_state()
-        if pit_number < 0 or pit_number > 5:
+        if pit_number < 0 or pit_number > 5:  # Invalid pit selected. TODO: Fix with available pits.
             print("Invalid pit choice. Please select a valid pit.")
         else:
             stone_amount = game_state[pit_number]
@@ -82,6 +83,7 @@ class Board:
                     stone_amount -= 1
 
                 self.update_game_state(game_state)
+
                 self.change_turn()
 
     def print(self):  # Continuously reorients the game board after which player's turn it is.
