@@ -1,9 +1,12 @@
+from AI.AIController import AIController
 from Entities.Board import Board
 
 
 class GameController:
     bool_default = 1
     game_board = Board
+    aiController = AIController()
+    # aiController2 = AIController()
 
     def initial_setup(self):
         self.bool_default = int(input(
@@ -24,7 +27,16 @@ class GameController:
             self.game_board = Board("Human", 4, 3)
 
     def game_loop(self):
-        while not self.game_board.GameFinished:
+        while not self.game_board.check_game_end():
+            state = self.game_board.get_current_game_state()
+
             self.game_board.print()
-            print(self.game_board.get_current_game_state())
-            self.game_board.move_stones(int(input("Please enter desired pit to move: ")))
+            print(state)
+            if state[-1]:
+                self.game_board.move_stones(int(input("Please enter desired pit to move: ")))
+                # self.game_board.move_stones(self.aiController2.mini_max(state))
+            else:
+                self.game_board.move_stones(self.aiController.mini_max(state))
+
+
+
