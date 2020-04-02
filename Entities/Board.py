@@ -14,10 +14,10 @@ class Board:
         self.human_turn = not self.human_turn
 
     def check_game_end(self):
-        if sum(self.human_player.pits.StonePits) is 0 or not self.list_available_pits():
+        if sum(self.human_player.pits.StonePits) == 0 or not self.list_available_pits():
             self.ai_player.kalaha.score += sum(self.ai_player.pits.StonePits)
             self.GameFinished = True
-        elif sum(self.ai_player.pits.StonePits) is 0 or not self.list_available_pits():
+        elif sum(self.ai_player.pits.StonePits) == 0 or not self.list_available_pits():
             self.human_player.kalaha.score += sum(self.human_player.pits.StonePits)
             self.GameFinished = True
 
@@ -80,26 +80,26 @@ class Board:
 
             while stone_amount > 0:  # Standard stone movement procedure.
                 pit_number += 1
-                if pit_number is 13:
+                if pit_number == 13:
                     pit_number = 0
                 game_state[pit_number] += 1
                 stone_amount -= 1
 
-            if pit_number is 6:  # Check to see if rule of Kalaha continuety is a fulfilled.
+            if pit_number == 6:  # Check to see if rule of Kalaha continuety is a fulfilled.
                 print("Last stone was added to Kalaha! Extra turn rewarded.")
                 self.update_game_state(game_state)
                 keep_turn = True
 
             elif not 0 >= pit_number <= 5:
                 if self.human_turn:
-                    if game_state[pit_number] is 1:
+                    if game_state[pit_number] == 1:
                         game_state[6] += game_state[pit_number] + game_state[13 - (pit_number + 1)]
                         game_state[pit_number] = 0
                         game_state[13 - (pit_number + 1)] = 0
                         self.update_game_state(game_state)
                         keep_turn = True
                 else:
-                    if game_state[pit_number] is 1:
+                    if game_state[pit_number] == 1:
                         game_state[6] += game_state[pit_number] + game_state[13 - (pit_number + 1)]
                         game_state[pit_number] = 0
                         game_state[13 - (pit_number + 1)] = 0

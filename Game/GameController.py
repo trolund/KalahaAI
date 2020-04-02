@@ -1,17 +1,20 @@
 from AI.AIController import AIController
 from Entities.Board import Board
+from Game import GameLogic
+from Entities.State import State
 
 
 class GameController:
     bool_default = 1
-    game_board = Board
+    state = State(True)
+    game_board = None
     aiController = AIController()
 
     def initial_setup(self):
         self.bool_default = int(input(
             "Welcome to Kalaha. Please enter '1' for a default game, or enter '0' for a custom setup.\n"))
 
-        if self.bool_default is 0:
+        if self.bool_default == 0:
             print("Custom game selected. Please walk through the initial game setup: ")
             player_name = input("Please enter desired player name: ")
             stone_amount_start = int(input("Please enter desired stone amount per pit (default is 4): "))
@@ -26,13 +29,13 @@ class GameController:
             self.game_board = Board("Human", 4, 3)
 
     def game_loop(self):
-        while not self.game_board.GameFinished:
-            self.game_board.print()
+        while not GameLogic.game_finished(self.state):
+            GameLogic.print(self.state)
 
-            if self.game_board.human_turn:
-                self.game_board.move_stones(int(input("Please enter desired pit to move: ")))
+            if self.state.human_turn:
+                GameLogic.new_state(self.state, int(input("Please enter desired pit to move: ")))
             else:
-                self.game_board.move_stones(self.aiController.mini_max(self.game_board.get_current_game_state()))
+                GameLogic.new_state(self.state, self.aiController.mini_max(self.state))
 
 
 
