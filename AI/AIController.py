@@ -35,30 +35,31 @@ class AIController:
         if state.human_turn:
             final_action = min(utilities)[1]
         else:
-            final_action = max(utilities)[1]
+            final_action = max(utilities)[1] + 7
 
+        print("action:", final_action)
         return final_action
 
-    def max_value(self, state: State):
-        if self.terminal_test(state):
+    def max_value(self, state: State, depth = 2):
+        if self.terminal_test(state) or depth == 0:
             return self.utility(state)
         v = -99999999
         for action in self.actions(state):
             newState = self.result(state, action)
             if newState.human_turn:
-                v = max(v, self.min_value(newState))
+                v = max(v, self.min_value(newState, depth - 1))
             else:
-                v = max(v, self.max_value(newState))
+                v = max(v, self.max_value(newState, depth - 1))
         return v
 
-    def min_value(self, state: State):
-        if self.terminal_test(state):
+    def min_value(self, state: State, depth = 2):
+        if self.terminal_test(state) or depth == 0:
             return self.utility(state)
         v = 99999999
         for action in self.actions(state):
             newState = self.result(state, action)
             if state.human_turn:
-                v = min(v, self.max_value(newState))
+                v = min(v, self.max_value(newState, depth - 1))
             else:
-                v = min(v, self.min_value(newState))
+                v = min(v, self.min_value(newState, depth - 1))
         return v

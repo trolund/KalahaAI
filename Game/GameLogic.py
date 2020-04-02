@@ -38,31 +38,33 @@ def new_state(state: State, pit_number): # 5
 def game_finished(state: State):
     if sum(state.game_state[0:6]) == 0:
         state.game_state[13] += sum(state.game_state[7:13])
-        state.game_state[7:13] = 0
+        for i in range(7, 13):
+            state.game_state[i] = 0
         return True
     elif sum(state.game_state[7:13]) == 0:
         state.game_state[6] += sum(state.game_state[0:6])
-        state.game_state[0:6] = 0
+        for i in range(6):
+            state.game_state[i] = 0
         return True
     else:
         return False
 
-def print(state: State):  # Continuously reorients the game board after which player's turn it is.
+def print_state(state: State):  # Continuously reorients the game board after which player's turn it is.
     if not game_finished(state):
 
-        print(str(state.game_state))
+        print(state.game_state)
 
-        # print("     Game board      ")
-        # print("    " + state.human_turn + "'s turn    ") # TODO indsæt Henrik for human
-        # print("#####################")
-        # temp_list = state.game_state[0:6] # 0 - 5
-        # temp_list.reverse()
-        # print(*temp_list, sep=" | ")
-        # print(str(state.game_state[13]) + "                   " + str(state.game_state[6]))
+        print("     Game board      ")
+        print("    " + str(state.human_turn) + "'s turn    ") # TODO indsæt Henrik for human
+        print("#####################")
+        temp_list = state.game_state[7:13] # 0 - 5
+        temp_list.reverse()
+        print(*temp_list, sep=" | ")
+        print(str(state.game_state[13]) + "                   " + str(state.game_state[6]))
         # temp_list2 = self.human_player.pits.StonePits
         # temp_list2.reverse()
-        # print(*state.game_state[7:13], sep=" | ")
-        # print("#####################\nAvailable pits: " + str(list_available_pits()))
+        print(*state.game_state[0:6], sep=" | ")
+        print("#####################\nAvailable pits: " + str(list_available_pits(state)))
 
     else:
         print('game over...')
