@@ -6,7 +6,6 @@ class GameController:
     bool_default = 1
     game_board = Board
     aiController = AIController()
-    # aiController2 = AIController()
 
     def initial_setup(self):
         self.bool_default = int(input(
@@ -27,16 +26,13 @@ class GameController:
             self.game_board = Board("Human", 4, 3)
 
     def game_loop(self):
-        while not self.game_board.check_game_end():
-            state = self.game_board.get_current_game_state()
-
+        while not self.game_board.GameFinished:
             self.game_board.print()
-            print(state)
-            if state[-1]:
+
+            if self.game_board.human_turn:
                 self.game_board.move_stones(int(input("Please enter desired pit to move: ")))
-                # self.game_board.move_stones(self.aiController2.mini_max(state))
             else:
-                self.game_board.move_stones(self.aiController.mini_max(state))
+                self.game_board.move_stones(self.aiController.mini_max(self.game_board.get_current_game_state()))
 
 
 
