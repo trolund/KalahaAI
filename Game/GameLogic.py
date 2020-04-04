@@ -6,7 +6,11 @@ def list_available_pits(state: State):
     if state.human_turn:
         return [i for i, v in enumerate(state.game_state[0:6]) if v > 0]
     else:
-        return [i for i, v in enumerate(state.game_state[7:13]) if v > 0]
+        temp_val = [i for i, v in enumerate(state.game_state[7:13]) if v > 0]
+        for i in temp_val:
+            print("temp_val, i: " + str(i))
+            temp_val[i] += 7  # 0, 2, 10 (7, 9, 17)
+        return temp_val
 
 
 def new_state(state: State, pit_number): # 5
@@ -16,18 +20,22 @@ def new_state(state: State, pit_number): # 5
 
     while stone_amount > 0:  # Standard stone movement procedure.
         pit_number += 1
-        if pit_number == 13:
+        if state.human_turn and pit_number == 13:
             pit_number = 0
+        elif not state.human_turn and pit_number == 14:
+            pit_number = 0
+        elif not state.human_turn and pit_number == 6:
+            pit_number = 7
         newState.game_state[pit_number] += 1
         stone_amount -= 1
 
     if not (newState.human_turn and pit_number == 6) and not (not newState.human_turn and pit_number == 13):
-        if newState.human_turn and 0 >= pit_number <= 5 and newState.game_state[pit_number] == 1: # stjæl points
+        if newState.human_turn and 0 <= pit_number <= 5 and newState.game_state[pit_number] == 1: # stjæl points
             pos = 13 - (pit_number + 1)
             newState.game_state[6] += newState.game_state[pos] + newState.game_state[pit_number]
             newState.game_state[pos] = 0
             newState.game_state[pit_number] = 0
-        elif not newState.human_turn and 7 >= pit_number <= 12 and newState.game_state[pit_number] == 1: # stjæl points
+        elif not newState.human_turn and 7 <= pit_number <= 12 and newState.game_state[pit_number] == 1: # stjæl points
             pos = 13 - (pit_number + 1)
             newState.game_state[13] += newState.game_state[pos] + newState.game_state[pit_number]
             newState.game_state[pos] = 0

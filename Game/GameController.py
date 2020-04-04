@@ -29,6 +29,7 @@ class GameController:
             self.game_board = Board("Human", 4, 3)
 
     def game_loop(self):
+        GameLogic.print_state(self.state)
         while not GameLogic.game_finished(self.state):
 
 

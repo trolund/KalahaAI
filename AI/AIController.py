@@ -5,7 +5,8 @@ from Game import GameLogic
 class AIController:
 
     def actions(self, state: State):
-        return GameLogic.list_available_pits(state)
+        temp_val = GameLogic.list_available_pits(state)
+        return temp_val
 
     def utility(self, state: State): # TODO bedre utility funktion engang i fremtiden
         if state.game_state[6] > state.game_state[13]:
@@ -44,6 +45,7 @@ class AIController:
         if self.terminal_test(state) or depth == 0:
             return self.utility(state)
         v = -99999999
+        # deepcopy her???
         for action in self.actions(state):
             newState = self.result(state, action)
             if newState.human_turn:
