@@ -71,3 +71,60 @@ class AIController:
             else:
                 v = min(v, self.min_value(newState, depth - 1))
         return v
+
+    def alpha_beta_search(self, state: State):
+        utilities = []  # (utility value, action) --> max(utility value, action)
+
+        alpha = -9999999
+        beta = 9999999
+
+        for action in self.actions(state):
+            newState = self.result(state, action)
+            if newState.human_turn:  # Human_turn - True/False
+                utilities.append((self.alpha_beta_min_value(newState, alpha, beta, self.init_depth), action))  # Spillerens tur
+            else:
+                utilities.append((self.alpha_beta_max_value(newState, alpha, beta, self.init_depth), action))  # A.I
+
+        if state.human_turn:
+            final_action = min(utilities)[1]
+        else:
+            final_action = max(utilities)[1]
+        print(utilities)
+        print("action:", final_action)
+        return final_action
+
+    def alpha_beta_max_value(self, state: State, alpha, beta, depth=3):
+        if self.terminal_test(state) or depth == 0:
+            return self.eval(state)
+        v = -99999999
+
+        for action in self.actions(state):
+            newState = self.result(state, action)
+
+            if newState.human_turn:
+                v = max(v, self.alpha_beta_min_value(newState, alpha, beta, depth - 1))
+
+            else:
+                v = max(v, self.alpha_beta_max_value(newState, alpha, beta, depth - 1))
+
+            if v >= beta:
+                return v
+            alpha = max(alpha, v)
+        return v
+
+
+    def alpha_beta_min_value(self, state: State, alpha, beta, depth=3):
+        if self.terminal_test(state) or depth == 0:
+            return self.eval(state)
+        v = 99999999
+        for action in self.actions(state):
+            newState = self.result(state, action)
+            if state.human_turn:
+                v = min(v, self.alpha_beta_max_value(newState, alpha, beta, depth - 1))
+            else:
+                v = min(v, self.alpha_beta_min_value(newState, alpha, beta, depth - 1))
+
+            if v <= alpha:
+                return v
+            beta = min(beta, v)
+        return v
