@@ -8,7 +8,8 @@ class GameController:
     bool_default = 1
     state = State(True)
     game_board = None
-    aiController = AIController()
+    aiController = AIController(1)
+    aiController2 = AIController(7)
 
     def initial_setup(self):
         self.bool_default = int(input(
@@ -33,8 +34,9 @@ class GameController:
         while not GameLogic.game_finished(self.state):
 
             if self.state.human_turn:
-                self.state = GameLogic.new_state(self.state, int(input("Please enter desired pit to move: ")))
-            else:
+                # self.state = GameLogic.new_state(self.state, int(input("Please enter desired pit to move: ")))
                 self.state = GameLogic.new_state(self.state, self.aiController.mini_max(self.state))
+            else:
+                self.state = GameLogic.new_state(self.state, self.aiController2.mini_max(self.state))
 
             GameLogic.print_state(self.state)

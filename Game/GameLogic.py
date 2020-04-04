@@ -78,10 +78,10 @@ def print_state(state: State):  # Continuously reorients the game board after wh
 
     else:
         print('game over...')
-        # scoreboard = self.get_game_score()
-        # print("    Game finished    ")
-        # print("#####################")
-        # print("Game winner: " + str(scoreboard[2]))
-        # print("    Scoreboard       ")
-        # print("Player: " + str(scoreboard[0]) + " Computer: " + str(scoreboard[1]))
-        # print("#####################")
+        scoreboard = state.game_state.copy()
+        print("    Game finished    ")
+        print("#####################")
+       #  print("Game winner: " + str(scoreboard[2]))
+        print("    Scoreboard       ")
+        print("Player(true): " + str(scoreboard[6]) + " Computer(false): " + str(scoreboard[13]))
+        print("#####################")

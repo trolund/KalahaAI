@@ -4,6 +4,9 @@ from Game import GameLogic
 
 class AIController:
 
+    def __init__(self, depth=5):
+        self.init_depth = depth
+
     def actions(self, state: State):
         temp_val = GameLogic.list_available_pits(state)
         return temp_val
@@ -32,9 +35,9 @@ class AIController:
         for action in self.actions(state):
             newState = self.result(state, action)
             if newState.human_turn:  # Human_turn - True/False
-                utilities.append((self.min_value(newState), action))  # Spillerens tur
+                utilities.append((self.min_value(newState, self.init_depth), action))  # Spillerens tur
             else:
-                utilities.append((self.max_value(newState), action))  # A.I
+                utilities.append((self.max_value(newState, self.init_depth), action))  # A.I
 
         if state.human_turn:
             final_action = min(utilities)[1]
@@ -44,7 +47,7 @@ class AIController:
         print("action:", final_action)
         return final_action
 
-    def max_value(self, state: State, depth=3):
+    def max_value(self, state: State, depth = 3):
         if self.terminal_test(state) or depth == 0:
             return self.eval(state)
         v = -99999999
