@@ -8,7 +8,7 @@ class AIController:
         temp_val = GameLogic.list_available_pits(state)
         return temp_val
 
-    def utility(self, state: State): # TODO bedre utility funktion engang i fremtiden
+    def utility(self, state: State):  # TODO bedre utility funktion engang i fremtiden
         if state.game_state[6] > state.game_state[13]:
             return 0
         elif state.game_state[6] == state.game_state[13]:
@@ -16,13 +16,16 @@ class AIController:
         else:
             return 1
 
+    def eval(self, state: State):
+        return state.game_state[13] - state.game_state[6]
+
     def result(self, state: State, action):
         return GameLogic.new_state(state, action)
 
     def terminal_test(self, state: State):
         return GameLogic.game_finished(state)
 
-    #A.I er max spiller
+    # A.I er max spiller
     def mini_max(self, state: State):
         utilities = []  # (utility value, action) --> max(utility value, action)
 
@@ -36,14 +39,14 @@ class AIController:
         if state.human_turn:
             final_action = min(utilities)[1]
         else:
-            final_action = max(utilities)[1] + 7
-
+            final_action = max(utilities)[1]
+        print(utilities)
         print("action:", final_action)
         return final_action
 
-    def max_value(self, state: State, depth = 2):
+    def max_value(self, state: State, depth=3):
         if self.terminal_test(state) or depth == 0:
-            return self.utility(state)
+            return self.eval(state)
         v = -99999999
         # deepcopy her???
         for action in self.actions(state):
@@ -54,9 +57,9 @@ class AIController:
                 v = max(v, self.max_value(newState, depth - 1))
         return v
 
-    def min_value(self, state: State, depth = 2):
+    def min_value(self, state: State, depth=3):
         if self.terminal_test(state) or depth == 0:
-            return self.utility(state)
+            return self.eval(state)
         v = 99999999
         for action in self.actions(state):
             newState = self.result(state, action)

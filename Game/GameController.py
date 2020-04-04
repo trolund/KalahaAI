@@ -32,12 +32,9 @@ class GameController:
         GameLogic.print_state(self.state)
         while not GameLogic.game_finished(self.state):
 
-
             if self.state.human_turn:
                 self.state = GameLogic.new_state(self.state, int(input("Please enter desired pit to move: ")))
             else:
                 self.state = GameLogic.new_state(self.state, self.aiController.mini_max(self.state))
 
             GameLogic.print_state(self.state)
-
-

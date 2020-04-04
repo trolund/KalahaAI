@@ -7,13 +7,13 @@ def list_available_pits(state: State):
         return [i for i, v in enumerate(state.game_state[0:6]) if v > 0]
     else:
         temp_val = [i for i, v in enumerate(state.game_state[7:13]) if v > 0]
-        for i in temp_val:
-            print("temp_val, i: " + str(i))
+        for i, value in enumerate(temp_val):
+            # print("temp_val, i: " + str(i))
             temp_val[i] += 7  # 0, 2, 10 (7, 9, 17)
         return temp_val
 
 
-def new_state(state: State, pit_number): # 5
+def new_state(state: State, pit_number):  # 5
     newState = copy.deepcopy(state)
     stone_amount = newState.game_state[pit_number]
     newState.game_state[pit_number] = 0
@@ -30,18 +30,19 @@ def new_state(state: State, pit_number): # 5
         stone_amount -= 1
 
     if not (newState.human_turn and pit_number == 6) and not (not newState.human_turn and pit_number == 13):
-        if newState.human_turn and 0 <= pit_number <= 5 and newState.game_state[pit_number] == 1: # stjæl points
+        if newState.human_turn and 0 <= pit_number <= 5 and newState.game_state[pit_number] == 1:  # stjæl points
             pos = 13 - (pit_number + 1)
             newState.game_state[6] += newState.game_state[pos] + newState.game_state[pit_number]
             newState.game_state[pos] = 0
             newState.game_state[pit_number] = 0
-        elif not newState.human_turn and 7 <= pit_number <= 12 and newState.game_state[pit_number] == 1: # stjæl points
+        elif not newState.human_turn and 7 <= pit_number <= 12 and newState.game_state[pit_number] == 1:  # stjæl points
             pos = 13 - (pit_number + 1)
             newState.game_state[13] += newState.game_state[pos] + newState.game_state[pit_number]
             newState.game_state[pos] = 0
             newState.game_state[pit_number] = 0
         newState.human_turn = not newState.human_turn
     return newState
+
 
 def game_finished(state: State):
     if sum(state.game_state[0:6]) == 0:
@@ -57,15 +58,16 @@ def game_finished(state: State):
     else:
         return False
 
+
 def print_state(state: State):  # Continuously reorients the game board after which player's turn it is.
     if not game_finished(state):
 
         print(state.game_state)
 
         print("     Game board      ")
-        print("    " + str(state.human_turn) + "'s turn    ") # TODO indsæt Henrik for human
+        print("    " + str(state.human_turn) + "'s turn    ")  # TODO indsæt Henrik for human
         print("#####################")
-        temp_list = state.game_state[7:13] # 0 - 5
+        temp_list = state.game_state[7:13]  # 0 - 5
         temp_list.reverse()
         print(*temp_list, sep=" | ")
         print(str(state.game_state[13]) + "                   " + str(state.game_state[6]))
