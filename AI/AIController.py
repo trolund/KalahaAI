@@ -6,6 +6,7 @@ class AIController:
 
     def __init__(self, depth=5):
         self.init_depth = depth
+        print("depth = " + str(depth))
 
     def actions(self, state: State):
         temp_val = GameLogic.list_available_pits(state)
