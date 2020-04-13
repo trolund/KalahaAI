@@ -53,36 +53,32 @@ class GameController:
         player2_sum = 0
 
         while not GameLogic.game_finished(self.state):
-            if self.bool_default == 1:
+            if self.bool_default == 1: # If default game is selected, shift between player and AI
                 if self.state.human_turn:
                     self.state = GameLogic.new_state(self.state, int(input("Please enter desired pit to move: ")))
                 else:
-                    if self.ai1_difficulty == 0:
+                    if self.ai1_difficulty == 0:  # If mini-max is selected run this
                         self.state = GameLogic.new_state(self.state, self.aiController.mini_max(self.state))
-                    else:
+                    else:  # Otherwise run alpha_beta
                         self.state = GameLogic.new_state(self.state, self.aiController.alpha_beta_search(self.state))
-            elif self.bool_default == 0:
+            elif self.bool_default == 0:  # AI vs AI is selected
                 if self.state.human_turn:
                     start = time.monotonic_ns()
-                    if self.ai1_difficulty == 0:
+                    if self.ai1_difficulty == 0:  # If mini-max is selected run this
                         self.state = GameLogic.new_state(self.state, self.aiController.mini_max(self.state))
-                    else:
+                    else:  # Otherwise run alpha_beta
                         self.state = GameLogic.new_state(self.state, self.aiController.alpha_beta_search(self.state))
                     end = time.monotonic_ns()
-                    # print("time taken mini-max: " + str((end - start) / 1000000) + "ms")
                     player1_counter += 1
                     player1_sum += (end - start) / 1000000
 
                 else:
                     start = time.monotonic_ns()
-                    if self.ai2_difficulty == 0:
-                        self.state = GameLogic.new_state(self.state, self.aiController3.random_action(self.state))
-                        # self.state = GameLogic.new_state(self.state, self.aiController2.mini_max(self.state))
-                    else:
-                        self.state = GameLogic.new_state(self.state, self.aiController3.random_action(self.state))
-                        # self.state = GameLogic.new_state(self.state, self.aiController2.alpha_beta_search(self.state))
+                    if self.ai2_difficulty == 0:  # If mini-max is selected run this
+                        self.state = GameLogic.new_state(self.state, self.aiController2.mini_max(self.state))
+                    else:  # Otherwise run alpha_beta
+                        self.state = GameLogic.new_state(self.state, self.aiController2.alpha_beta_search(self.state))
                     end = time.monotonic_ns()
-                    # print("time taken alpha-beta: " + str((end - start) / 1000000) + "ms")
                     player2_counter += 1
                     player2_sum += (end - start) / 1000000
             else:

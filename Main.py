@@ -1,9 +1,11 @@
 from Game.GameController import GameController
+from Game.TestGameController import GameController as TestGameController
 
 
 def main():
     # Create game controller object
     game_controller = GameController()
+    # game_controller = TestGameController()
 
     # Set up game
     game_controller.initial_setup()
