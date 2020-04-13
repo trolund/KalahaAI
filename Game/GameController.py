@@ -17,6 +17,7 @@ class GameController:
     aiController = None
     aiController2 = None
     aiController3 = None
+    f = open("utility.txt", "a+")
 
     def initial_setup(self):
         self.bool_default = int(input(
@@ -91,7 +92,9 @@ class GameController:
 
             GameLogic.print_state(self.state)
 
+
         if self.bool_default == 0:
+            self.f.writelines(str(self.state.game_state[13] > self.state.game_state[6]))
             print("Player1 average time per turn: " + str(player1_sum / player1_counter))
             print("Player2 average time per turn: " + str(player2_sum / player2_counter))
             print("Number of moves: " + str(player1_counter + player2_counter))
