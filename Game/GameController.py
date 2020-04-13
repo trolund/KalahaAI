@@ -76,9 +76,11 @@ class GameController:
                 else:
                     start = time.monotonic_ns()
                     if self.ai2_difficulty == 0:
-                        self.state = GameLogic.new_state(self.state, self.aiController2.mini_max(self.state))
+                        self.state = GameLogic.new_state(self.state, self.aiController3.random_action(self.state))
+                        # self.state = GameLogic.new_state(self.state, self.aiController2.mini_max(self.state))
                     else:
-                        self.state = GameLogic.new_state(self.state, self.aiController2.alpha_beta_search(self.state))
+                        self.state = GameLogic.new_state(self.state, self.aiController3.random_action(self.state))
+                        # self.state = GameLogic.new_state(self.state, self.aiController2.alpha_beta_search(self.state))
                     end = time.monotonic_ns()
                     # print("time taken alpha-beta: " + str((end - start) / 1000000) + "ms")
                     player2_counter += 1
@@ -93,6 +95,3 @@ class GameController:
             print("Player1 average time per turn: " + str(player1_sum / player1_counter))
             print("Player2 average time per turn: " + str(player2_sum / player2_counter))
             print("Number of moves: " + str(player1_counter + player2_counter))
-
-
-        # (2, 0), (2, 1) ....

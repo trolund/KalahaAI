@@ -113,7 +113,7 @@ class AIController:
 
     def alpha_beta_max_value(self, state: State, alpha, beta, depth=3):
         if self.terminal_test(state) or depth == 0:
-            return self.eval_with_remaining_points(state)
+            return self.utility(state)
             # return self.eval(state)
             # return self.eval_with_remaining_points(state)
         v = -99999999
@@ -134,7 +134,7 @@ class AIController:
 
     def alpha_beta_min_value(self, state: State, alpha, beta, depth=3):
         if self.terminal_test(state) or depth == 0:
-            return self.eval_with_remaining_points(state)
+            return self.utility(state)
             # return self.eval(state)
             # return self.eval_with_remaining_points(state)
         v = 99999999
