@@ -1,4 +1,5 @@
 from AI.AIController import AIController
+from AI.RandomAgent import RandomAgent
 from Game import GameLogic
 from Entities.State import State
 import time
@@ -15,6 +16,7 @@ class GameController:
     depth2 = 3
     aiController = None
     aiController2 = None
+    aiController3 = None
 
     def initial_setup(self):
         self.bool_default = int(input(
@@ -41,6 +43,7 @@ class GameController:
 
         self.aiController = AIController(self.depth1)
         self.aiController2 = AIController(self.depth2)
+        self.aiController3 = RandomAgent()
 
     def game_loop(self):
         GameLogic.print_state(self.state)
