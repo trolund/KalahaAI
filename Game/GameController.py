@@ -17,7 +17,6 @@ class GameController:
     aiController = None
     aiController2 = None
     aiController3 = None
-    f = open("utility.txt", "a+")
 
     def initial_setup(self):
         self.bool_default = int(input(
@@ -47,60 +46,53 @@ class GameController:
         self.aiController3 = RandomAgent()
 
     def game_loop(self):
-        startturn = True
+        GameLogic.print_state(self.state)
+        player1_counter = 0
+        player1_sum = 0
+        player2_counter = 0
+        player2_sum = 0
 
-        for i in range(0, 1000):
-            startturn = not startturn
-
-            self.state = State(startturn)
-            GameLogic.print_state(self.state)
-            player1_counter = 0
-            player1_sum = 0
-            player2_counter = 0
-            player2_sum = 0
-
-            while not GameLogic.game_finished(self.state):
-                if self.bool_default == 1:
-                    if self.state.human_turn:
-                        self.state = GameLogic.new_state(self.state, int(input("Please enter desired pit to move: ")))
-                    else:
-                        if self.ai1_difficulty == 0:
-                            self.state = GameLogic.new_state(self.state, self.aiController.mini_max(self.state))
-                        else:
-                            self.state = GameLogic.new_state(self.state, self.aiController.alpha_beta_search(self.state))
-                elif self.bool_default == 0:
-                    if self.state.human_turn:
-                        start = time.monotonic_ns()
-                        if self.ai1_difficulty == 0:
-                            self.state = GameLogic.new_state(self.state, self.aiController.mini_max(self.state))
-                        else:
-                            self.state = GameLogic.new_state(self.state, self.aiController.alpha_beta_search(self.state))
-                        end = time.monotonic_ns()
-                        # print("time taken mini-max: " + str((end - start) / 1000000) + "ms")
-                        player1_counter += 1
-                        player1_sum += (end - start) / 1000000
-
-                    else:
-                        start = time.monotonic_ns()
-                        if self.ai2_difficulty == 0:
-                            self.state = GameLogic.new_state(self.state, self.aiController3.random_action(self.state))
-                            # self.state = GameLogic.new_state(self.state, self.aiController2.mini_max(self.state))
-                        else:
-                            self.state = GameLogic.new_state(self.state, self.aiController3.random_action(self.state))
-                            # self.state = GameLogic.new_state(self.state, self.aiController2.alpha_beta_search(self.state))
-                        end = time.monotonic_ns()
-                        # print("time taken alpha-beta: " + str((end - start) / 1000000) + "ms")
-                        player2_counter += 1
-                        player2_sum += (end - start) / 1000000
+        while not GameLogic.game_finished(self.state):
+            if self.bool_default == 1:
+                if self.state.human_turn:
+                    self.state = GameLogic.new_state(self.state, int(input("Please enter desired pit to move: ")))
                 else:
-                    print("Input not recognised. Closing program!")
-                    sys.exit()
+                    if self.ai1_difficulty == 0:
+                        self.state = GameLogic.new_state(self.state, self.aiController.mini_max(self.state))
+                    else:
+                        self.state = GameLogic.new_state(self.state, self.aiController.alpha_beta_search(self.state))
+            elif self.bool_default == 0:
+                if self.state.human_turn:
+                    start = time.monotonic_ns()
+                    if self.ai1_difficulty == 0:
+                        self.state = GameLogic.new_state(self.state, self.aiController.mini_max(self.state))
+                    else:
+                        self.state = GameLogic.new_state(self.state, self.aiController.alpha_beta_search(self.state))
+                    end = time.monotonic_ns()
+                    # print("time taken mini-max: " + str((end - start) / 1000000) + "ms")
+                    player1_counter += 1
+                    player1_sum += (end - start) / 1000000
 
-                GameLogic.print_state(self.state)
+                else:
+                    start = time.monotonic_ns()
+                    if self.ai2_difficulty == 0:
+                        self.state = GameLogic.new_state(self.state, self.aiController3.random_action(self.state))
+                        # self.state = GameLogic.new_state(self.state, self.aiController2.mini_max(self.state))
+                    else:
+                        self.state = GameLogic.new_state(self.state, self.aiController3.random_action(self.state))
+                        # self.state = GameLogic.new_state(self.state, self.aiController2.alpha_beta_search(self.state))
+                    end = time.monotonic_ns()
+                    # print("time taken alpha-beta: " + str((end - start) / 1000000) + "ms")
+                    player2_counter += 1
+                    player2_sum += (end - start) / 1000000
+            else:
+                print("Input not recognised. Closing program!")
+                sys.exit()
+
+            GameLogic.print_state(self.state)
 
 
-            if self.bool_default == 0:
-                self.f.write(str(self.state.game_state[13] > self.state.game_state[6]) + "\n")
-                print("Player1 average time per turn: " + str(player1_sum / player1_counter))
-                print("Player2 average time per turn: " + str(player2_sum / player2_counter))
-                print("Number of moves: " + str(player1_counter + player2_counter))
+        if self.bool_default == 0:
+            print("Player1 average time per turn: " + str(player1_sum / player1_counter))
+            print("Player2 average time per turn: " + str(player2_sum / player2_counter))
+            print("Number of moves: " + str(player1_counter + player2_counter))
