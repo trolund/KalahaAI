@@ -8,7 +8,6 @@ def list_available_pits(state: State):
     else:
         temp_val = [i for i, v in enumerate(state.game_state[7:13]) if v > 0]
         for i, value in enumerate(temp_val):
-            # print("temp_val, i: " + str(i))
             temp_val[i] += 7  # 0, 2, 10 (7, 9, 17)
         return temp_val
 
@@ -65,23 +64,24 @@ def print_state(state: State):  # Continuously reorients the game board after wh
         print(state.game_state)
 
         print("     Game board      ")
-        print("    " + str(state.human_turn) + "'s turn    ")  # TODO indsæt Henrik for human
+        if state.human_turn:
+            print("  Player One's turn    ")  #
+        else:
+            print("  Player Two's turn    ")  #
         print("#####################")
         temp_list = state.game_state[7:13]  # 0 - 5
         temp_list.reverse()
         print(*temp_list, sep=" | ")
         print(str(state.game_state[13]) + "                   " + str(state.game_state[6]))
-        # temp_list2 = self.human_player.pits.StonePits
-        # temp_list2.reverse()
         print(*state.game_state[0:6], sep=" | ")
         print("#####################\nAvailable pits: " + str(list_available_pits(state)))
 
     else:
-        print('game over...')
+        print("      Game over!")
         scoreboard = state.game_state.copy()
         print("    Game finished    ")
         print("#####################")
-       #  print("Game winner: " + str(scoreboard[2]))
-        print("    Scoreboard       ")
-        print("Player(true): " + str(scoreboard[6]) + " Computer(false): " + str(scoreboard[13]))
+        #  print("Game winner: " + str(scoreboard[2]))
+        print("    Scoreboard:")
+        print("   Player One: " + str(scoreboard[6]) + "\n   Player Two: " + str(scoreboard[13]))
         print("#####################")
