@@ -20,8 +20,11 @@ class AIController:
         else:
             return 1
 
-    def eval(self, state: State):  #
+    def eval(self, state: State):
         return state.game_state[13] - state.game_state[6]
+
+    def eval_with_remaining_points(self, state):
+        return sum(state.game_state[7:14]) - sum(state.game_state[0:7])
 
     # def eval2(self, state: State, depth: int, is_max: bool):
     #    if is_max:
@@ -50,9 +53,9 @@ class AIController:
                 utilities.append((self.max_value(newState, self.init_depth), action))  # A.I
 
         if state.human_turn:
-            final_action = min(utilities)[1]
+            final_action = min(utilities, key=lambda t: t[0])[1]
         else:
-            final_action = max(utilities)[1]
+            final_action = max(utilities, key=lambda t: t[0])[1]
         print(utilities)
         print("Action chosen: ", final_action)
         return final_action
@@ -61,11 +64,11 @@ class AIController:
         if self.terminal_test(state) or depth == 0:
             # return self.eval2(state, depth, True)
             return self.eval(state)
+            # return self.eval_with_remaining_points(state)
         v = -99999999
-        # deepcopy her???
         for action in self.actions(state):
             newState = self.result(state, action)
-            if newState.human_turn:
+            if newState.human_turn:  # spiller 1
                 v = max(v, self.min_value(newState, depth - 1))
             else:
                 v = max(v, self.max_value(newState, depth - 1))
@@ -75,6 +78,7 @@ class AIController:
         if self.terminal_test(state) or depth == 0:
             # return self.eval2(state, depth, False)
             return self.eval(state)
+            # return self.eval_with_remaining_points(state)
         v = 99999999
         for action in self.actions(state):
             newState = self.result(state, action)
@@ -99,16 +103,19 @@ class AIController:
                 utilities.append((self.alpha_beta_max_value(newState, alpha, beta, self.init_depth), action))  # A.I
 
         if state.human_turn:
-            final_action = min(utilities)[1]
+            final_action = min(utilities, key=lambda t: t[0])[1]   # min(utilies)[1]   (utility , action)
+            print(utilities)
         else:
-            final_action = max(utilities)[1]
-        print(utilities)
+            final_action = max(utilities, key=lambda t: t[0])[1]
+            print(utilities)
         print("Action chosen: ", final_action)
         return final_action
 
     def alpha_beta_max_value(self, state: State, alpha, beta, depth=3):
         if self.terminal_test(state) or depth == 0:
-            return self.eval(state)
+            return self.eval_with_remaining_points(state)
+            # return self.eval(state)
+            # return self.eval_with_remaining_points(state)
         v = -99999999
 
         for action in self.actions(state):
@@ -127,7 +134,9 @@ class AIController:
 
     def alpha_beta_min_value(self, state: State, alpha, beta, depth=3):
         if self.terminal_test(state) or depth == 0:
-            return self.eval(state)
+            return self.eval_with_remaining_points(state)
+            # return self.eval(state)
+            # return self.eval_with_remaining_points(state)
         v = 99999999
         for action in self.actions(state):
             newState = self.result(state, action)

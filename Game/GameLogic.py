@@ -61,7 +61,7 @@ def game_finished(state: State):
 def print_state(state: State):  # Continuously reorients the game board after which player's turn it is.
     if not game_finished(state):
 
-        print(state.game_state)
+        print('\n\n' + str(state.game_state))
 
         print("     Game board      ")
         if state.human_turn:

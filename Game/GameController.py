@@ -90,3 +90,6 @@ class GameController:
             print("Player1 average time per turn: " + str(player1_sum / player1_counter))
             print("Player2 average time per turn: " + str(player2_sum / player2_counter))
             print("Number of moves: " + str(player1_counter + player2_counter))
+
+
+        # (2, 0), (2, 1) ....
