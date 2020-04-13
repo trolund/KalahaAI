@@ -19,8 +19,17 @@ class AIController:
         else:
             return 1
 
-    def eval(self, state: State):
+    def eval(self, state: State): #
         return state.game_state[13] - state.game_state[6]
+
+   # def eval2(self, state: State, depth: int, is_max: bool):
+    #    if is_max:
+     #       return (state.game_state[13] - state.game_state[6]) + depth * 10
+      #  else:
+       #     return (state.game_state[6] - state.game_state[13]) - depth * 10
+
+    def eval2(self, state: State, depth: int, is_max: bool):
+            return (state.game_state[13] - state.game_state[6]) * (5 - depth)
 
     def result(self, state: State, action):
         return GameLogic.new_state(state, action)
@@ -49,7 +58,8 @@ class AIController:
 
     def max_value(self, state: State, depth = 3):
         if self.terminal_test(state) or depth == 0:
-            return self.eval(state)
+           # return self.eval2(state, depth, True)
+           return self.eval(state)
         v = -99999999
         # deepcopy her???
         for action in self.actions(state):
@@ -62,7 +72,8 @@ class AIController:
 
     def min_value(self, state: State, depth=3):
         if self.terminal_test(state) or depth == 0:
-            return self.eval(state)
+           # return self.eval2(state, depth, False)
+           return self.eval(state)
         v = 99999999
         for action in self.actions(state):
             newState = self.result(state, action)

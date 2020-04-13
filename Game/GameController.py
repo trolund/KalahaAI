@@ -8,8 +8,8 @@ class GameController:
     bool_default = 1
     state = State(True)
     game_board = None
-    aiController = AIController(7)
-    aiController2 = AIController(7)
+    aiController = AIController(5)
+    aiController2 = AIController(5)
 
     def initial_setup(self):
         self.bool_default = int(input(
@@ -35,7 +35,9 @@ class GameController:
         player1_sum = 0
         player2_counter = 0
         player2_sum = 0
+
         while not GameLogic.game_finished(self.state):
+
 
             if self.state.human_turn:
                 # self.state = GameLogic.new_state(self.state, int(input("Please enter desired pit to move: ")))
@@ -48,7 +50,7 @@ class GameController:
 
             else:
                 start = time.monotonic_ns()
-                self.state = GameLogic.new_state(self.state, self.aiController2.alpha_beta_search(self.state))
+                self.state = GameLogic.new_state(self.state, self.aiController2.mini_max(self.state))
                 end = time.monotonic_ns()
                 print("time taken alpha-beta: " + str((end - start) / 1000000) + "ms")
                 player2_counter += 1
@@ -58,5 +60,6 @@ class GameController:
 
         print("player1 average: " + str(player1_sum / player1_counter))
         print("player2 average: " + str(player2_sum / player2_counter))
+        print("number of moved: " + str(player1_counter + player2_counter))
 
 
