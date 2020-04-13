@@ -5,6 +5,8 @@ from Game.TestGameController import GameController as TestGameController
 def main():
     # Create game controller object
     game_controller = GameController()
+
+    # Create a test game controller object
     # game_controller = TestGameController()
 
     # Set up game

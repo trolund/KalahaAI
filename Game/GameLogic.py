@@ -8,7 +8,7 @@ def list_available_pits(state: State):
     else:
         temp_val = [i for i, v in enumerate(state.game_state[7:13]) if v > 0]
         for i, value in enumerate(temp_val):
-            temp_val[i] += 7  # 0, 2, 10 (7, 9, 17)
+            temp_val[i] += 7
         return temp_val
 
 

@@ -6,7 +6,6 @@ class AIController:
 
     def __init__(self, depth=5):
         self.init_depth = depth
-        print("Depth: " + str(depth))
 
     def actions(self, state: State):
         temp_val = GameLogic.list_available_pits(state)
@@ -32,9 +31,8 @@ class AIController:
     def terminal_test(self, state: State):
         return GameLogic.game_finished(state)
 
-    # A.I er max spiller
     def mini_max(self, state: State):
-        utilities = []  # (utility value, action) --> max(utility value, action)
+        utilities = []
 
         for action in self.actions(state):
             newState = self.result(state, action)
@@ -47,15 +45,13 @@ class AIController:
             final_action = min(utilities, key=lambda t: t[0])[1]
         else:
             final_action = max(utilities, key=lambda t: t[0])[1]
-        print(utilities)
-        print("Action chosen: ", final_action)
+        # print(utilities)
+        # print("Action chosen: ", final_action)
         return final_action
 
     def max_value(self, state: State, depth=3):
         if self.terminal_test(state) or depth == 0:
-            # return self.eval2(state, depth, True)
             return self.eval_max_dif(state)
-            # return self.eval_with_remaining_points(state)
         v = -99999999
         for action in self.actions(state):
             newState = self.result(state, action)
@@ -67,9 +63,7 @@ class AIController:
 
     def min_value(self, state: State, depth=3):
         if self.terminal_test(state) or depth == 0:
-            # return self.eval2(state, depth, False)
             return self.eval_max_dif(state)
-            # return self.eval_with_remaining_points(state)
         v = 99999999
         for action in self.actions(state):
             newState = self.result(state, action)
@@ -87,19 +81,19 @@ class AIController:
 
         for action in self.actions(state):
             newState = self.result(state, action)
-            if newState.human_turn:  # Human_turn - True/False
+            if newState.human_turn:  # Human turn is basically player1 (True) and player2 (False)
                 utilities.append(
-                    (self.alpha_beta_min_value(newState, alpha, beta, self.init_depth), action))  # Spillerens tur
+                    (self.alpha_beta_min_value(newState, alpha, beta, self.init_depth), action))
             else:
-                utilities.append((self.alpha_beta_max_value(newState, alpha, beta, self.init_depth), action))  # A.I
+                utilities.append((self.alpha_beta_max_value(newState, alpha, beta, self.init_depth), action))
 
         if state.human_turn:
-            final_action = min(utilities, key=lambda t: t[0])[1]   # min(utilies)[1]   (utility , action)
+            final_action = min(utilities, key=lambda t: t[0])[1]
             print(utilities)
         else:
             final_action = max(utilities, key=lambda t: t[0])[1]
             print(utilities)
-        print("Action chosen: ", final_action)
+        # print("Action chosen: ", final_action)
         return final_action
 
     def alpha_beta_max_value(self, state: State, alpha, beta, depth=3):
