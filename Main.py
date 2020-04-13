@@ -1,5 +1,5 @@
 from Game.GameController import GameController
-from Game.TestGameController import GameController as TestGameController
+# from Game.TestGameController import TestGameController as TestGameController
 
 
 def main():

@@ -53,7 +53,7 @@ class GameController:
         player2_sum = 0
 
         while not GameLogic.game_finished(self.state):
-            if self.bool_default == 1: # If default game is selected, shift between player and AI
+            if self.bool_default == 1:  # If default game is selected, shift between player and AI
                 if self.state.human_turn:
                     self.state = GameLogic.new_state(self.state, int(input("Please enter desired pit to move: ")))
                 else:
@@ -86,7 +86,6 @@ class GameController:
                 sys.exit()
 
             GameLogic.print_state(self.state)
-
 
         if self.bool_default == 0:
             print("Player1 average time per turn: " + str(player1_sum / player1_counter))

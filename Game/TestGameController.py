@@ -6,7 +6,7 @@ import time
 import sys
 
 
-class GameController:
+class TestGameController:
     bool_default = 1
     state = State(True)
     game_board = None
@@ -17,7 +17,7 @@ class GameController:
     aiController = None
     aiController2 = None
     aiController3 = None
-    f = open("utility.txt", "a+")
+    f = open("depth3, eval_win_loss.txt", "a+")
 
     def initial_setup(self):
         self.bool_default = int(input(
@@ -67,14 +67,16 @@ class GameController:
                         if self.ai1_difficulty == 0:
                             self.state = GameLogic.new_state(self.state, self.aiController.mini_max(self.state))
                         else:
-                            self.state = GameLogic.new_state(self.state, self.aiController.alpha_beta_search(self.state))
+                            self.state = GameLogic.new_state(self.state,
+                                                             self.aiController.alpha_beta_search(self.state))
                 elif self.bool_default == 0:
                     if self.state.human_turn:
                         start = time.monotonic_ns()
                         if self.ai1_difficulty == 0:
                             self.state = GameLogic.new_state(self.state, self.aiController.mini_max(self.state))
                         else:
-                            self.state = GameLogic.new_state(self.state, self.aiController.alpha_beta_search(self.state))
+                            self.state = GameLogic.new_state(self.state,
+                                                             self.aiController.alpha_beta_search(self.state))
                         end = time.monotonic_ns()
                         # print("time taken mini-max: " + str((end - start) / 1000000) + "ms")
                         player1_counter += 1
@@ -97,7 +99,6 @@ class GameController:
                     sys.exit()
 
                 GameLogic.print_state(self.state)
-
 
             if self.bool_default == 0:
                 self.f.write(str(self.state.game_state[13] > self.state.game_state[6]) + "\n")
